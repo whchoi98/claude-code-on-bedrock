@@ -213,14 +213,14 @@ Claude Code는 MCP를 통해 다음과 같은 작업이 가능합니다:
 터미널에서 다음 명령을 실행합니다:
 
 ```bash
-claude mcp add neon \
+claude mcp add postgres \
   --transport stdio \
-  -e NEON_API_KEY=your-neon-api-key \
+  -e DATABASE_URL=postgresql://todouser:todopass@localhost:5432/todo_app \
   -- npx -y @anthropic-ai/postgres-mcp
 ```
 
 {% hint style="info" %}
-PostgreSQL API 키는 PostgreSQL 대시보드의 **Account Settings > API Keys**에서 생성할 수 있습니다.
+`DATABASE_URL`은 `.env.local`에 설정한 것과 동일한 연결 문자열을 사용합니다. EC2 로컬 PostgreSQL에 직접 연결됩니다.
 {% endhint %}
 
 ### MCP 서버 확인
