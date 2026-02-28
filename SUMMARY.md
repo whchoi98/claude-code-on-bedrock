@@ -42,6 +42,16 @@
 * [4.4 에이전트 스킬](chapter-04/04-skills.md)
 * [4.5 Bash 명령 & 팁](chapter-04/05-bash-and-tips.md)
 
+## Chapter 5: 슈퍼랩 — 프로처럼 Claude Code 사용하기
+
+* [챕터 개요](chapter-05/README.md)
+* [5.1 프로 워크플로 소개](chapter-05/01-workflow-overview.md)
+* [5.2 리서치 단계](chapter-05/02-research-phase.md)
+* [5.3 계획 수립 단계](chapter-05/03-planning-phase.md)
+* [5.4 주석 사이클](chapter-05/04-annotation-cycle.md)
+* [5.5 구현 단계](chapter-05/05-implementation.md)
+* [5.6 리뷰 & 프로 팁 종합](chapter-05/06-review-and-tips.md)
+
 ## 부록
 
 * [참고 자료 & 문제 해결](appendix/README.md)

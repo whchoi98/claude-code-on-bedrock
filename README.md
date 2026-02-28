@@ -45,6 +45,10 @@ GitHub 저장소 설정 후 GitHub Actions와 Claude Code를 연동하여 Issue 
 
 UI 개선, 커스텀 슬래시 명령, 에이전트 스킬, Bash 활용 등 Claude Code의 고급 기능을 학습합니다.
 
+### [Chapter 5: 슈퍼랩 — 프로처럼 Claude Code 사용하기](chapter-05/README.md)
+
+Boris Tane의 프로페셔널 워크플로(Research → Plan → Annotate → Implement)를 적용하여 Todo 앱에 통계 대시보드를 처음부터 끝까지 만드는 종합 실습입니다.
+
 ## Claude Code 기능 학습 로드맵
 
 이 워크샵에서는 Claude Code의 기능을 단계적으로 학습합니다. 각 챕터에서 배우는 주요 기능은 다음과 같습니다.
@@ -74,6 +78,13 @@ Chapter 4: 고급 기능
 ├── 에이전트 정의 (.claude/agents/)
 ├── Hooks (자동 실행)
 └── CLI 파이프 (claude -p)
+
+Chapter 5: 슈퍼랩 (종합 실습)
+├── Boris Tane 프로 워크플로
+├── 서브에이전트 리서치 → research.md
+├── 파일 기반 계획 → plan.md
+├── 인라인 주석 사이클 (NOTE/CHANGE/REJECT)
+└── 계획 기반 일괄 구현
 ```
 
 각 기능은 처음 등장하는 섹션에서 상세히 설명되며, 이후 챕터에서는 자연스럽게 활용됩니다.
@@ -99,6 +110,8 @@ Chapter 4: 고급 기능
 | 커스텀 에이전트 | [Sub-agents](https://code.claude.com/docs/en/sub-agents) | 4.4 | .claude/agents/ 에이전트 정의 |
 | Hooks | [Hooks](https://code.claude.com/docs/en/hooks) | 4.5 | 도구 실행 전후 자동 스크립트 |
 | CLI 파이프 | [CLI Reference](https://code.claude.com/docs/en/cli-reference) | 4.5 | claude -p 비대화형 모드 |
+| 프로 워크플로 | [Best Practices](https://code.claude.com/docs/en/best-practices) | 5.1~5.6 | Research → Plan → Annotate → Implement |
+| 파일 기반 계획 | [Common Workflows](https://code.claude.com/docs/en/common-workflows) | 5.2~5.4 | research.md, plan.md 작성 및 주석 사이클 |
 | VS Code 확장 | [VS Code](https://code.claude.com/docs/en/vs-code) | 사전 준비 | IDE 내 Claude Code 사용 |
 | 설정 관리 | [Settings](https://code.claude.com/docs/en/settings) | 전체 | /config, /permissions 등 |
 

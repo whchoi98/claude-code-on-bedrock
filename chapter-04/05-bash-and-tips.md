@@ -304,24 +304,17 @@ export ANTHROPIC_MODEL="us.anthropic.claude-sonnet-4-20250514-v1:0"
 Bedrock에서 사용 가능한 모델 ID는 AWS 콘솔의 Bedrock 모델 액세스 페이지에서 확인하세요. Cross-region inference를 사용하는 경우 `us.` 접두사가 붙습니다.
 {% endhint %}
 
-## 워크샵 마무리
+## Chapter 4 마무리
 
-축하합니다! Chapter 1부터 Chapter 4까지 Claude Code on Amazon Bedrock 핸즈온 워크샵을 완료했습니다.
+축하합니다! Chapter 4를 완료했습니다. 이 챕터에서 Claude Code의 고급 기능들을 배웠습니다:
 
-### 이 워크샵에서 배운 것들
+- **이미지 기반 피드백**으로 UI 개선
+- **사용자 범위 Skills**로 전역 자동화
+- **커스텀 에이전트**로 특화된 작업 위임
+- **Hooks**로 도구 실행 자동화
+- **CLI 파이프**로 비대화형 활용
 
-| Chapter | 핵심 내용 |
-|---------|-----------|
-| Chapter 1 | 프로젝트 설정, Bedrock 연결, CLAUDE.md, 컨텍스트 창 개념 |
-| Chapter 2 | 문서 기반 코드 생성, Thinking 모드, 서버 액션, 슬래시 명령, 서브에이전트 |
-| Chapter 3 | GitHub 저장소 설정, GitHub Actions + Claude Code, Issue 기반 자동 개발 |
-| Chapter 4 | UI 개선, 스킬, 커스텀 에이전트, Hooks, CLI 파이프, 생산성 팁 |
-
-### 다음 단계
-
-- [Claude Code 공식 문서](https://code.claude.com/docs)에서 더 많은 기능 탐색
-- [부록: 참고 자료 & 문제 해결](../appendix/README.md)에서 추가 리소스 확인
-- Todo 앱에 새로운 기능을 추가하며 실습 계속
+다음 Chapter 5에서는 이 모든 기능을 **프로 워크플로**로 통합하여, 통계 대시보드를 처음부터 끝까지 만드는 종합 실습을 수행합니다.
 
 ---
 
@@ -336,4 +329,4 @@ Bedrock에서 사용 가능한 모델 ID는 AWS 콘솔의 Bedrock 모델 액세�
 
 ---
 
-[부록: 참고 자료 & 문제 해결](../appendix/README.md)로 이동
+> **다음 챕터**: [Chapter 5: 슈퍼랩 — 프로처럼 Claude Code 사용하기](../chapter-05/README.md)에서 Boris Tane의 프로 워크플로를 적용하여 통계 대시보드를 만드는 종합 실습을 수행합니다.
