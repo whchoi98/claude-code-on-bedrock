@@ -65,6 +65,10 @@ categories: id, name, color, createdAt
 
 > **참고**: Claude Code의 스킬, 서브에이전트, Hooks에 대한 공식 문서는 [https://code.claude.com/docs](https://code.claude.com/docs)에서 확인할 수 있습니다.
 
+### 다음 챕터 미리보기
+
+Chapter 4를 완료하면, [Chapter 5: 슈퍼랩 — 프로처럼 Claude Code 사용하기](../chapter-05/README.md)에서 이 모든 기능을 **Boris Tane의 프로 워크플로**(Research → Plan → Annotate → Implement)로 통합하여 통계 대시보드를 처음부터 끝까지 만드는 종합 실습을 수행합니다.
+
 ---
 
 준비가 되었다면 [4.1 UI 개선](01-ui-refinement.md)부터 시작하겠습니다.
