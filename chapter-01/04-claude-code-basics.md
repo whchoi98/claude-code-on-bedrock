@@ -52,7 +52,7 @@ Claude Code에는 두 가지 작업 모드가 있습니다.
 
 ```
 # Normal 모드에서의 프롬프트 예시
-Fix the TypeScript error in app/page.tsx and run the build to verify.
+app/page.tsx의 TypeScript 에러를 수정하고 빌드를 실행해서 확인해줘.
 ```
 
 ### Plan 모드 (Shift+Tab)
@@ -61,8 +61,8 @@ Fix the TypeScript error in app/page.tsx and run the build to verify.
 
 ```
 # Plan 모드에서의 프롬프트 예시
-How should I structure the database schema for a study tracker app?
-What files need to change to add authentication?
+학습 트래커 앱의 데이터베이스 스키마를 어떻게 구성하면 좋을까?
+인증을 추가하려면 어떤 파일을 변경해야 해?
 ```
 
 {% hint style="info" %}
