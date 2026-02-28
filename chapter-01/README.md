@@ -62,4 +62,10 @@ todo-app/
 └── tailwind.config.ts
 ```
 
+### 다음 챕터 미리보기
+
+Chapter 1을 완료하면, [Chapter 2: Claude Code로 코드 생성](../chapter-02/README.md)에서 CLAUDE.md 문서, Thinking 모드, 서브에이전트 등 핵심 기능을 활용하여 Todo 앱의 주요 기능을 구현합니다.
+
+---
+
 다음 섹션인 [1.1 AWS 환경 설정](01-environment-setup.md)으로 진행하세요.
