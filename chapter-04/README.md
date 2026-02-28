@@ -1,0 +1,50 @@
+# Chapter 4: 고급 기능
+
+> Claude Code의 고급 기능을 활용하여 학습 트래커 앱을 한 단계 더 발전시킵니다.
+
+## 이 챕터에서 다루는 내용
+
+이전 챕터들에서 학습 트래커의 기본 기능을 구현하고 배포까지 완료했습니다. 이제 Claude Code의 고급 기능들을 활용하여 앱을 더욱 완성도 높게 만들어보겠습니다.
+
+### 학습 목표
+
+| 섹션 | 내용 | 핵심 기능 |
+|------|------|-----------|
+| [4.1 UI 개선](01-ui-refinement.md) | 팝오버 캘린더, 통계 카드, 차트 | 이미지 기반 피드백, 반복적 개선 |
+| [4.2 학습 블록 기록](02-exercise-logging.md) | 과목별 학습 블록 CRUD | 복합 기능 구현, 자체 검증 |
+| [4.3 사용자 범위 슬래시 명령](03-custom-commands-advanced.md) | 사용자 범위 스킬 생성 | Skills, `~/.claude/skills/` |
+| [4.4 에이전트 스킬](04-skills.md) | 자동 스킬, 서브에이전트, 커스텀 에이전트 | context: fork, .claude/agents/ |
+| [4.5 Bash 명령 & 팁](05-bash-and-tips.md) | CLI 파이프, 비대화형 모드, Hooks | 생산성 향상 팁 |
+
+### 사전 조건
+
+- Chapter 1~3 완료 (학습 트래커 기본 기능 + 배포)
+- 데이터베이스에 `study_sessions`, `subjects`, `session_subjects`, `study_blocks` 테이블 생성 완료
+- 개발 서버가 정상 작동하는 상태
+
+### DB 스키마 참고
+
+이 챕터에서는 특히 `study_blocks` 테이블을 적극 활용합니다.
+
+```
+study_sessions: id, userId, date, startTime, endTime, notes, createdAt, updatedAt
+subjects: id, userId, name, color, createdAt
+session_subjects: id, sessionId, subjectId
+study_blocks: id, sessionSubjectId, durationMinutes, pagesRead, notes, createdAt
+```
+
+### 핵심 개념 미리보기
+
+이 챕터에서 배우게 될 Claude Code 고급 기능들입니다.
+
+- **스킬(Skills)**: Claude의 동작을 확장하는 `SKILL.md` 파일. 프로젝트 범위(`.claude/skills/`)와 사용자 범위(`~/.claude/skills/`)로 나뉨
+- **서브에이전트(Sub-agents)**: 특정 작업을 위임할 수 있는 독립된 AI 에이전트. `.claude/agents/`에 정의
+- **Hooks**: Claude의 도구 실행 전후에 자동으로 스크립트를 실행하는 자동화 기능
+- **CLI 파이프**: `claude -p` 명령으로 다른 도구의 출력을 Claude에 전달
+- **이미지 피드백**: 스크린샷을 붙여넣어 UI 수정 요청
+
+> **참고**: Claude Code의 스킬, 서브에이전트, Hooks에 대한 공식 문서는 [https://code.claude.com/docs](https://code.claude.com/docs)에서 확인할 수 있습니다.
+
+---
+
+준비가 되었다면 [4.1 UI 개선](01-ui-refinement.md)부터 시작하겠습니다.
