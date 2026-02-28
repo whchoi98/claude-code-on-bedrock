@@ -1,6 +1,6 @@
-# 1.7 데이터베이스 설정 (Neon Postgres + Drizzle ORM + shadcn/ui)
+# 1.7 데이터베이스 설정 (PostgreSQL (로컬) + Drizzle ORM + shadcn/ui)
 
-> Neon Postgres 데이터베이스를 생성하고, Drizzle ORM과 shadcn/ui를 설치 및 구성합니다.
+> PostgreSQL (로컬) 데이터베이스를 생성하고, Drizzle ORM과 shadcn/ui를 설치 및 구성합니다.
 
 > 🎯 **이 섹션에서 배울 Claude Code 기능**: 자연어로 패키지 설치 및 설정, `/clear`
 
@@ -8,39 +8,39 @@
 
 {% hint style="info" %}
 **용어 설명**
-- **Neon**: 클라우드에서 동작하는 PostgreSQL 데이터베이스 서비스입니다. 서버를 직접 관리할 필요 없이 데이터베이스를 사용할 수 있습니다.
+- **PostgreSQL**: 클라우드에서 동작하는 PostgreSQL 데이터베이스 서비스입니다. 서버를 직접 관리할 필요 없이 데이터베이스를 사용할 수 있습니다.
 - **Drizzle ORM**: TypeScript 코드로 데이터베이스를 다룰 수 있게 해주는 라이브러리입니다. SQL을 직접 작성하지 않아도 됩니다.
 - **shadcn/ui**: 미리 만들어진 UI 컴포넌트 모음입니다. 버튼, 카드, 테이블 등을 쉽게 사용할 수 있습니다.
 {% endhint %}
 
-### 왜 Neon + Drizzle + shadcn/ui 조합을 사용하나요?
+### 왜 PostgreSQL + Drizzle + shadcn/ui 조합을 사용하나요?
 
 | 도구 | 역할 | 선택 이유 |
 |------|------|-----------|
-| **Neon** | 데이터베이스 | 무료 티어 제공, 서버리스로 관리 부담 없음, Vercel과 궁합이 좋음 |
+| **PostgreSQL** | 데이터베이스 | 무료 티어 제공, 서버리스로 관리 부담 없음, Vercel과 궁합이 좋음 |
 | **Drizzle** | ORM | TypeScript 친화적, 타입 안전성, 가볍고 빠름 |
 | **shadcn/ui** | UI 컴포넌트 | 커스터마이징 가능, Tailwind CSS 기반, Next.js에 최적화 |
 
 ## 개요
 
-이 섹션에서는 학습 트래커의 데이터 저장소로 사용할 Neon Postgres 서버리스 데이터베이스를 생성하고, TypeScript 친화적인 Drizzle ORM을 설정합니다. 또한 UI 프레임워크인 shadcn/ui를 초기화하여 다음 챕터에서 사용할 컴포넌트를 준비합니다.
+이 섹션에서는 Todo 앱의 데이터 저장소로 사용할 PostgreSQL (로컬) 서버리스 데이터베이스를 생성하고, TypeScript 친화적인 Drizzle ORM을 설정합니다. 또한 UI 프레임워크인 shadcn/ui를 초기화하여 다음 챕터에서 사용할 컴포넌트를 준비합니다.
 
 {% hint style="info" %}
 이전 섹션에서 배운 대로, 새 작업을 시작하기 전에 `/clear`로 컨텍스트를 초기화하세요.
 {% endhint %}
 
-## 1단계: Neon 계정 및 프로젝트 생성
+## 1단계: PostgreSQL 계정 및 프로젝트 생성
 
-### Neon 계정 생성
+### PostgreSQL 계정 생성
 
-1. [neon.tech](https://neon.tech)에 접속합니다.
+1. [postgresql.org](https://postgresql.org)에 접속합니다.
 2. **Sign up**을 클릭하여 계정을 생성합니다 (GitHub 계정으로 로그인 가능).
 
 ### 프로젝트 생성
 
 1. 대시보드에서 **New Project**를 클릭합니다.
 2. 프로젝트 설정:
-   - **Project name**: `study-tracker`
+   - **Project name**: `todo-app`
    - **Region**: 가장 가까운 리전 선택 (예: `US East (Ohio)`)
    - **Postgres version**: 기본값 사용
 3. **Create Project**를 클릭합니다.
@@ -59,39 +59,39 @@
 → *이 프롬프트는 데이터베이스 연결 문자열을 환경변수 파일에 추가하기 위한 것입니다:*
 
 ```
-.env.local에 Neon 연결 문자열로 DATABASE_URL을 추가해줘:
-DATABASE_URL=postgresql://username:password@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+.env.local에 PostgreSQL 연결 문자열로 DATABASE_URL을 추가해줘:
+DATABASE_URL=postgresql://username:password@ep-xxx.us-east-2.aws.postgresql.org/neondb?sslmode=require
 ```
 
 {% hint style="danger" %}
-**중요**: 위의 연결 문자열은 예시입니다. Neon 대시보드에서 복사한 **실제 연결 문자열**을 사용하세요.
+**중요**: 위의 연결 문자열은 예시입니다. PostgreSQL 대시보드에서 복사한 **실제 연결 문자열**을 사용하세요.
 {% endhint %}
 
 현재 `.env.local` 파일의 전체 내용:
 
 ```env
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your-key-here
-CLERK_SECRET_KEY=sk_test_your-key-here
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+# Database
+
+
+
+
 
 # Database
-DATABASE_URL=postgresql://username:password@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgresql://username:password@ep-xxx.us-east-2.aws.postgresql.org/neondb?sslmode=require
 ```
 
 ## 3단계: Drizzle ORM 및 shadcn/ui 설치
 
 Claude Code에 다음 프롬프트를 입력합니다:
 
-→ *이 프롬프트는 Drizzle ORM, Neon 드라이버, shadcn/ui를 한 번에 설치하고 설정하기 위한 것입니다:*
+→ *이 프롬프트는 Drizzle ORM, PostgreSQL 드라이버, shadcn/ui를 한 번에 설치하고 설정하기 위한 것입니다:*
 
 ```
-Neon Postgres serverless 드라이버와 함께 Drizzle ORM을 설치하고 설정해줘.
+PostgreSQL (로컬) serverless 드라이버와 함께 Drizzle ORM을 설치하고 설정해줘.
 shadcn/ui도 기본 테마로 초기화하고, 다음 shadcn 컴포넌트를 추가해줘: button, card, input, label, select, table, dialog, popover, calendar.
 
 세부 요구사항:
-1. drizzle-orm, @neondatabase/serverless 설치, drizzle-kit은 dev dependency로 설치
+1. drizzle-orm, pg 설치, drizzle-kit은 dev dependency로 설치
 2. 프로젝트 루트에 drizzle.config.ts 생성
 3. db/index.ts에 데이터베이스 연결 유틸리티 생성
 4. shadcn/ui 초기화 및 나열된 컴포넌트 추가
@@ -104,7 +104,7 @@ Claude Code는 다음을 자동으로 처리합니다:
 
 1. **패키지 설치**:
    ```bash
-   pnpm add drizzle-orm @neondatabase/serverless
+   pnpm add drizzle-orm pg
    pnpm add -D drizzle-kit
    ```
 
@@ -155,18 +155,18 @@ export default defineConfig({
 db/index.ts의 내용을 보여줘
 ```
 
-Neon 서버리스 드라이버를 사용한 연결 유틸리티:
+node-postgres 드라이버를 사용한 연결 유틸리티:
 
 ```typescript
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 
 const sql = neon(process.env.DATABASE_URL!);
 export const db = drizzle({ client: sql });
 ```
 
 {% hint style="info" %}
-Neon의 서버리스 드라이버(`@neondatabase/serverless`)는 HTTP 기반으로 동작하여 서버리스 환경(Vercel 등)에서 Cold Start 시간을 최소화합니다.
+node-postgres의 드라이버(`pg`)는 HTTP 기반으로 동작하여 서버리스 환경(Vercel 등)에서 Cold Start 시간을 최소화합니다.
 {% endhint %}
 
 ### package.json 스크립트
@@ -257,8 +257,8 @@ components/ui/
 CLAUDE.md에 다음 섹션을 추가해줘:
 
 ## 데이터베이스
-- Neon Postgres + Drizzle ORM
-- 연결: db/index.ts (neon-http 드라이버)
+- PostgreSQL (로컬) + Drizzle ORM
+- 연결: db/index.ts (node-postgres Pool)
 - 스키마: db/schema.ts
 - 설정: drizzle.config.ts
 - 명령어: pnpm db:generate, pnpm db:migrate, pnpm db:studio
@@ -292,7 +292,7 @@ test-db API 라우트를 삭제해줘. 데이터베이스 연결 테스트용이
 
 | 항목 | 상태 |
 |------|------|
-| Neon Postgres 프로젝트 생성 | &#x2705; |
+| PostgreSQL (로컬) 프로젝트 생성 | &#x2705; |
 | DATABASE_URL 환경변수 설정 | &#x2705; |
 | Drizzle ORM 설치 및 설정 | &#x2705; |
 | shadcn/ui 초기화 및 컴포넌트 추가 | &#x2705; |
@@ -304,7 +304,7 @@ test-db API 라우트를 삭제해줘. 데이터베이스 연결 테스트용이
 
 이 섹션을 완료하면 다음을 확인하세요:
 
-- [ ] Neon Postgres 프로젝트가 생성되고 연결 문자열이 `.env.local`에 설정됨
+- [ ] PostgreSQL (로컬) 프로젝트가 생성되고 연결 문자열이 `.env.local`에 설정됨
 - [ ] Drizzle ORM이 설치되고 `drizzle.config.ts`, `db/index.ts`가 생성됨
 - [ ] shadcn/ui가 초기화되고 필요한 컴포넌트들이 `components/ui/`에 생성됨
 - [ ] 데이터베이스 연결 테스트가 성공함

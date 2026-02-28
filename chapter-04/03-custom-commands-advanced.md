@@ -124,10 +124,10 @@ disable-model-invocation: true
 → *이 프롬프트는 디버그 스킬에 에러 메시지를 인자로 전달하기 위한 것입니다:*
 
 ```
-/debug TypeError: Cannot read property 'map' of undefined in dashboard page
+/debug TypeError: Cannot read property 'map' of undefined in todos page
 ```
 
-이 경우 `$ARGUMENTS`가 `TypeError: Cannot read property 'map' of undefined in dashboard page`로 치환됩니다.
+이 경우 `$ARGUMENTS`가 `TypeError: Cannot read property 'map' of undefined in todos page`로 치환됩니다.
 
 {% hint style="info" %}
 `$ARGUMENTS`가 스킬 본문에 포함되어 있지 않으면, 전달된 인자는 스킬 내용 끝에 `ARGUMENTS: <value>` 형태로 자동 추가됩니다.
@@ -151,13 +151,13 @@ disable-model-invocation: true
 주요 차이점을 보여주고 어떤 접근 방식이 더 나은지 설명해줘.
 ```
 
-사용 예: `/compare src/old-auth.ts src/new-auth.ts`
+사용 예: `/compare src/old-utils.ts src/new-utils.ts`
 
 축약형 `$0`, `$1`도 사용 가능합니다 (`$0`은 `$ARGUMENTS[0]`과 동일).
 
 ## Step 3: 스킬 사용해보기
 
-생성한 스킬들을 학습 트래커 프로젝트에서 사용해봅시다.
+생성한 스킬들을 Todo 앱 프로젝트에서 사용해봅시다.
 
 ### 코드 리뷰 스킬 테스트
 
@@ -176,7 +176,7 @@ disable-model-invocation: true
 → *이 프롬프트는 특정 버그를 디버그 스킬에 전달하여 원인 분석을 요청하기 위한 것입니다:*
 
 ```
-/debug 학습 블록을 삭제할 때 합계가 업데이트되지 않아
+/debug 할 일을 완료 처리할 때 목록이 업데이트되지 않아
 ```
 
 ## Step 4: 스킬 고급 팁

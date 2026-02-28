@@ -90,7 +90,7 @@ Claude가 이 문제를 어떻게 분석하는지 관찰합니다. 다음과 같
 
 **1단계: 데이터 흐름 분석**
 ```
-URL: /dashboard/sessions?startDate=2025-01-01&endDate=2025-01-31&subject=math&sort=newest
+URL: /todos?startDate=2025-01-01&endDate=2025-01-31&subject=math&sort=newest
                     │
                     ▼
 Server Component (page.tsx): searchParams에서 필터 값 추출
@@ -129,7 +129,7 @@ Claude가 생성할 파일들을 확인합니다:
 
 ```typescript
 import { db } from "@/db";
-import { studySessions, sessionSubjects, subjects } from "@/db/schema";
+import { todos, categories, categories } from "@/db/schema";
 import { eq, desc, asc, and, gte, lte, sql } from "drizzle-orm";
 
 export interface SessionFilters {
@@ -140,26 +140,25 @@ export interface SessionFilters {
 }
 
 export async function getFilteredSessions(
-  userId: string,
+
   filters: SessionFilters
 ) {
-  const conditions = [eq(studySessions.userId, userId)];
 
   if (filters.startDate) {
-    conditions.push(gte(studySessions.date, filters.startDate));
+    conditions.push(gte(todos.date, filters.startDate));
   }
   if (filters.endDate) {
-    conditions.push(lte(studySessions.date, filters.endDate));
+    conditions.push(lte(todos.date, filters.endDate));
   }
 
   const orderBy =
     filters.sort === "oldest"
-      ? asc(studySessions.date)
-      : desc(studySessions.date);
+      ? asc(todos.date)
+      : desc(todos.date);
 
   let query = db
     .select()
-    .from(studySessions)
+    .from(todos)
     .where(and(...conditions))
     .orderBy(orderBy);
 
@@ -186,10 +185,10 @@ import {
 } from "@/components/ui/select";
 
 interface SessionFiltersProps {
-  subjects: { id: string; name: string }[];
+  categories: { id: string; name: string }[];
 }
 
-export function SessionFilters({ subjects }: SessionFiltersProps) {
+export function SessionFilters({ categories }: SessionFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -201,7 +200,7 @@ export function SessionFilters({ subjects }: SessionFiltersProps) {
       } else {
         params.delete(key);
       }
-      router.push(`/dashboard/sessions?${params.toString()}`);
+      router.push(`/todos?${params.toString()}`);
     },
     [router, searchParams]
   );
@@ -219,7 +218,7 @@ export function SessionFilters({ subjects }: SessionFiltersProps) {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Subjects</SelectItem>
-          {subjects.map((s) => (
+          {categories.map((s) => (
             <SelectItem key={s.id} value={s.id}>
               {s.name}
             </SelectItem>
@@ -235,10 +234,10 @@ export function SessionFilters({ subjects }: SessionFiltersProps) {
 #### 서버 컴포넌트 업데이트 (`page.tsx`)
 
 ```typescript
-import { auth } from "@clerk/nextjs/server";
+
 import { redirect } from "next/navigation";
 import { getFilteredSessions } from "@/lib/queries/sessions";
-import { getSubjectsByUserId } from "@/lib/queries/subjects";
+import { getCategories } from "@/lib/queries/categories";
 import { SessionFilters } from "@/components/session-filters";
 
 interface Props {
@@ -251,25 +250,25 @@ interface Props {
 }
 
 export default async function SessionsPage({ searchParams }: Props) {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  
+  
 
   const params = await searchParams;
 
-  const [sessions, subjects] = await Promise.all([
-    getFilteredSessions(userId, {
+  const [sessions, categories] = await Promise.all([
+    getFilteredTodos({
       startDate: params.startDate,
       endDate: params.endDate,
       subjectId: params.subject,
       sort: (params.sort as "newest" | "oldest") ?? "newest",
     }),
-    getSubjectsByUserId(userId),
+    getCategories(),
   ]);
 
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Study Sessions</h1>
-      <SessionFilters subjects={subjects} />
+      <SessionFilters categories={categories} />
       {/* 세션 테이블 렌더링 */}
     </div>
   );

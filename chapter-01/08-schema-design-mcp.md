@@ -1,6 +1,6 @@
-# 1.8 Plan 모드로 스키마 설계 + Neon MCP로 시드 데이터
+# 1.8 Plan 모드로 스키마 설계 + PostgreSQL MCP로 시드 데이터
 
-> Plan 모드를 활용하여 데이터베이스 스키마를 설계하고, Neon MCP 서버를 연결하여 시드 데이터를 삽입합니다.
+> Plan 모드를 활용하여 데이터베이스 스키마를 설계하고, PostgreSQL MCP 서버를 연결하여 시드 데이터를 삽입합니다.
 
 > 🎯 **이 섹션에서 배울 Claude Code 기능**: Plan 모드 (`Shift+Tab`), MCP 서버 연결
 
@@ -8,7 +8,7 @@
 
 ## 개요
 
-이 섹션에서는 Claude Code의 **Plan 모드**를 사용하여 코드를 변경하지 않고 스키마를 먼저 설계한 후, Normal 모드에서 구현합니다. 또한 **MCP(Model Context Protocol)** 서버를 통해 Neon 데이터베이스에 직접 시드 데이터를 삽입하는 방법을 학습합니다.
+이 섹션에서는 Claude Code의 **Plan 모드**를 사용하여 코드를 변경하지 않고 스키마를 먼저 설계한 후, Normal 모드에서 구현합니다. 또한 **MCP(Model Context Protocol)** 서버를 통해 PostgreSQL 데이터베이스에 직접 시드 데이터를 삽입하는 방법을 학습합니다.
 
 {% hint style="info" %}
 새 작업을 시작하기 전에 `/clear`로 컨텍스트를 초기화하세요.
@@ -41,18 +41,18 @@ Plan 모드는 Claude Code가 **읽기 전용**으로 동작하는 모드입니�
 → *이 프롬프트는 Plan 모드에서 코드 변경 없이 데이터베이스 스키마 구조를 설계하기 위한 것입니다:*
 
 ```
-학습 트래커 애플리케이션을 위한 Drizzle ORM 스키마를 계획해줘. 다음 테이블들이 필요해:
+Todo 앱 애플리케이션을 위한 Drizzle ORM 스키마를 계획해줘. 다음 테이블들이 필요해:
 
-- study_sessions: id (uuid, primary key), userId (text, Clerk에서 제공), date (date), startTime (timestamp), endTime (timestamp), notes (text, 선택), createdAt (timestamp), updatedAt (timestamp)
+- todos: id (uuid, primary key), date (date), startTime (timestamp), endTime (timestamp), notes (text, 선택), createdAt (timestamp), updatedAt (timestamp)
 
-- subjects: id (uuid, primary key), userId (text), name (text), color (text), createdAt (timestamp)
+- categories: id (uuid, primary key), name (text), color (text), createdAt (timestamp)
 
-- session_subjects: id (uuid, primary key), sessionId (uuid, FK → study_sessions), subjectId (uuid, FK → subjects)
+- categories: id (uuid, primary key), sessionId (uuid, FK → todos), subjectId (uuid, FK → categories)
 
-- study_blocks: id (uuid, primary key), sessionSubjectId (uuid, FK → session_subjects), durationMinutes (integer), pagesRead (integer, 선택), notes (text, 선택), createdAt (timestamp)
+- todos: id (uuid, primary key), sessionSubjectId (uuid, FK → categories), durationMinutes (integer), pagesRead (integer, 선택), notes (text, 선택), createdAt (timestamp)
 
 고려사항:
-1. userId와 외래 키에 적절한 인덱스
+1. 외래 키에 적절한 인덱스
 2. Cascade 삭제 동작
 3. Drizzle ORM relations 설정
 4. 스키마 파일은 db/schema.ts에 생성
@@ -72,8 +72,8 @@ Claude Code가 다음 내용을 포함한 계획을 제시합니다:
 → *이 프롬프트는 설계 계획에 인덱스를 추가하고 Cascade 동작을 조정하기 위한 것입니다:*
 
 ```
-study_sessions.date에 날짜 범위 조회를 위한 인덱스도 추가해줘.
-그리고 session_subjects가 삭제될 때 study_blocks도 cascade 삭제되도록 해줘.
+todos.date에 날짜 범위 조회를 위한 인덱스도 추가해줘.
+그리고 categories가 삭제될 때 todos도 cascade 삭제되도록 해줘.
 ```
 
 {% hint style="info" %}
@@ -104,9 +104,8 @@ import { relations } from 'drizzle-orm';
 
 // ===== Tables =====
 
-export const studySessions = pgTable('study_sessions', {
+export const todos = pgTable('todos', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
   date: date('date').notNull(),
   startTime: timestamp('start_time'),
   endTime: timestamp('end_time'),
@@ -114,29 +113,26 @@ export const studySessions = pgTable('study_sessions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
-  index('study_sessions_user_id_idx').on(table.userId),
-  index('study_sessions_date_idx').on(table.date),
+  index('todos_date_idx').on(table.date),
 ]);
 
-export const subjects = pgTable('subjects', {
+export const categories = pgTable('categories', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
   name: text('name').notNull(),
   color: text('color').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => [
-  index('subjects_user_id_idx').on(table.userId),
 ]);
 
-export const sessionSubjects = pgTable('session_subjects', {
+export const categories = pgTable('categories', {
   id: uuid('id').defaultRandom().primaryKey(),
-  sessionId: uuid('session_id').references(() => studySessions.id, { onDelete: 'cascade' }).notNull(),
-  subjectId: uuid('subject_id').references(() => subjects.id, { onDelete: 'cascade' }).notNull(),
+  sessionId: uuid('session_id').references(() => todos.id, { onDelete: 'cascade' }).notNull(),
+  subjectId: uuid('subject_id').references(() => categories.id, { onDelete: 'cascade' }).notNull(),
 });
 
-export const studyBlocks = pgTable('study_blocks', {
+export const todos = pgTable('todos', {
   id: uuid('id').defaultRandom().primaryKey(),
-  sessionSubjectId: uuid('session_subject_id').references(() => sessionSubjects.id, { onDelete: 'cascade' }).notNull(),
+  sessionSubjectId: uuid('session_subject_id').references(() => categories.id, { onDelete: 'cascade' }).notNull(),
   durationMinutes: integer('duration_minutes').notNull(),
   pagesRead: integer('pages_read'),
   notes: text('notes'),
@@ -145,30 +141,30 @@ export const studyBlocks = pgTable('study_blocks', {
 
 // ===== Relations =====
 
-export const studySessionsRelations = relations(studySessions, ({ many }) => ({
-  sessionSubjects: many(sessionSubjects),
+export const todosRelations = relations(todos, ({ many }) => ({
+  categories: many(categories),
 }));
 
-export const subjectsRelations = relations(subjects, ({ many }) => ({
-  sessionSubjects: many(sessionSubjects),
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  categories: many(categories),
 }));
 
-export const sessionSubjectsRelations = relations(sessionSubjects, ({ one, many }) => ({
-  session: one(studySessions, {
-    fields: [sessionSubjects.sessionId],
-    references: [studySessions.id],
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+  session: one(todos, {
+    fields: [categories.sessionId],
+    references: [todos.id],
   }),
-  subject: one(subjects, {
-    fields: [sessionSubjects.subjectId],
-    references: [subjects.id],
+  subject: one(categories, {
+    fields: [categories.subjectId],
+    references: [categories.id],
   }),
-  studyBlocks: many(studyBlocks),
+  todos: many(todos),
 }));
 
-export const studyBlocksRelations = relations(studyBlocks, ({ one }) => ({
-  sessionSubject: one(sessionSubjects, {
-    fields: [studyBlocks.sessionSubjectId],
-    references: [sessionSubjects.id],
+export const todosRelations = relations(todos, ({ one }) => ({
+  sessionSubject: one(categories, {
+    fields: [todos.sessionSubjectId],
+    references: [categories.id],
   }),
 }));
 ```
@@ -195,9 +191,9 @@ pnpm db:migrate
 
 `drizzle/` 디렉토리에 마이그레이션 SQL 파일이 생성됩니다. 데이터베이스에 4개 테이블이 생성되었는지 확인합니다.
 
-## 4단계: Neon MCP 서버 연결 (선택사항)
+## 4단계: PostgreSQL MCP 서버 연결 (선택사항)
 
-MCP(Model Context Protocol)를 사용하면 Claude Code가 외부 도구와 직접 통신할 수 있습니다. Neon MCP 서버를 연결하면 Claude Code가 데이터베이스를 직접 조회하고 조작할 수 있습니다.
+MCP(Model Context Protocol)를 사용하면 Claude Code가 외부 도구와 직접 통신할 수 있습니다. PostgreSQL MCP 서버를 연결하면 Claude Code가 데이터베이스를 직접 조회하고 조작할 수 있습니다.
 
 ### MCP란?
 
@@ -212,7 +208,7 @@ Claude Code는 MCP를 통해 다음과 같은 작업이 가능합니다:
 - 모니터링 데이터 분석
 - 디자인 도구 통합
 
-### Neon MCP 서버 추가
+### PostgreSQL MCP 서버 추가
 
 터미널에서 다음 명령을 실행합니다:
 
@@ -220,11 +216,11 @@ Claude Code는 MCP를 통해 다음과 같은 작업이 가능합니다:
 claude mcp add neon \
   --transport stdio \
   -e NEON_API_KEY=your-neon-api-key \
-  -- npx -y @neondatabase/mcp-server-neon
+  -- npx -y @anthropic-ai/postgres-mcp
 ```
 
 {% hint style="info" %}
-Neon API 키는 Neon 대시보드의 **Account Settings > API Keys**에서 생성할 수 있습니다.
+PostgreSQL API 키는 PostgreSQL 대시보드의 **Account Settings > API Keys**에서 생성할 수 있습니다.
 {% endhint %}
 
 ### MCP 서버 확인
@@ -235,7 +231,7 @@ Claude Code 내에서 MCP 서버 상태를 확인합니다:
 /mcp
 ```
 
-Neon MCP 서버가 연결되어 있으면 사용 가능한 도구 목록이 표시됩니다.
+PostgreSQL MCP 서버가 연결되어 있으면 사용 가능한 도구 목록이 표시됩니다.
 
 ## 5단계: 시드 데이터 삽입
 
@@ -244,7 +240,7 @@ Neon MCP 서버가 연결되어 있으면 사용 가능한 도구 목록이 표�
 → *이 프롬프트는 MCP를 통해 데이터베이스에 직접 테스트용 시드 데이터를 삽입하기 위한 것입니다:*
 
 ```
-Neon MCP 서버를 사용해서 데이터베이스에 시드 데이터를 삽입해줘:
+PostgreSQL MCP 서버를 사용해서 데이터베이스에 시드 데이터를 삽입해줘:
 
 1. 과목 3개 생성:
    - 수학 (color: #3B82F6, 파랑)
@@ -253,13 +249,13 @@ Neon MCP 서버를 사용해서 데이터베이스에 시드 데이터를 삽입
 
 2. 오늘과 어제 날짜로 샘플 학습 세션 2개 생성
 
-3. session_subjects를 통해 과목을 세션에 연결
+3. categories를 통해 과목을 세션에 연결
 
 4. 학습 블록 추가:
    - 세션 1: 수학 60분 (30페이지), 영어 45분 (15페이지)
    - 세션 2: 프로그래밍 90분, 수학 30분 (20페이지)
 
-userId는 임시로 'test-user-001'을 사용해줘.
+
 ```
 
 ### Server Action을 통한 시드 데이터 (MCP 미연결 시)
@@ -274,7 +270,7 @@ db/seed.ts에 시드 스크립트를 생성해줘:
 2. 샘플 학습 세션 2개 삽입
 3. 과목을 세션에 연결
 4. 현실적인 데이터로 학습 블록 추가
-5. userId는 'test-user-001' 사용
+
 
 package.json에 tsx로 이 파일을 실행하는 "db:seed" 스크립트도 추가해줘.
 ```
@@ -310,7 +306,7 @@ pnpm db:studio
 | Plan 모드로 스키마 설계 | &#x2705; |
 | db/schema.ts 구현 | &#x2705; |
 | 마이그레이션 생성 및 실행 | &#x2705; |
-| Neon MCP 서버 연결 (선택) | &#x2705; |
+| PostgreSQL MCP 서버 연결 (선택) | &#x2705; |
 | 시드 데이터 삽입 | &#x2705; |
 
 ---
@@ -323,14 +319,14 @@ pnpm db:studio
 - [ ] `db/schema.ts`에 4개 테이블이 생성됨
 - [ ] 마이그레이션이 성공적으로 실행됨 (`pnpm db:generate` + `pnpm db:migrate`)
 - [ ] 시드 데이터가 데이터베이스에 삽입됨
-- [ ] (선택) Neon MCP 서버가 연결되어 동작함
+- [ ] (선택) PostgreSQL MCP 서버가 연결되어 동작함
 
 이것으로 Chapter 1이 완료되었습니다. 프로젝트의 기반이 모두 갖춰졌습니다:
 
 - AWS Bedrock 환경 설정 완료
 - Claude Code 설치 및 연결 완료
 - Next.js 프로젝트 생성 완료
-- Clerk 인증 설정 완료
+- PostgreSQL 설정 완료
 - 데이터베이스 스키마 설계 및 마이그레이션 완료
 - 시드 데이터 삽입 완료
 

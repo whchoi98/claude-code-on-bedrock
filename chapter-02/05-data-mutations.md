@@ -47,14 +47,14 @@ export async function createItem(formData: FormData) {
 ## 핵심 원칙
 - 모든 데이터 변이에 Next.js Server Actions 사용
 - 데이터 변이에 API 라우트 사용 금지
-- 데이터 변이 전 항상 인증 확인
+- 서버에서 항상 입력값 유효성 검사
 - 서버에서 항상 입력값 유효성 검사
 
 ## Server Action 구조
 - Server Actions는 actions/ 디렉토리에 배치
-- 도메인 엔티티별로 하나의 파일 (예: actions/sessions.ts, actions/subjects.ts)
+- 도메인 엔티티별로 하나의 파일 (예: actions/todos.ts, actions/categories.ts)
 - 각 액션 파일은 "use server" 지시어로 시작
-- 모든 액션은 Clerk의 auth()에서 userId를 확인해야 함
+- 모든 액션은 입력값 유효성 검사를 수행해야 함
 
 ## 입력 유효성 검사
 - 모든 입력 유효성 검사에 Zod 스키마 사용
@@ -93,10 +93,10 @@ type ActionResult = {
 docs/data-mutations.md를 읽어줘. "새 학습 세션" 폼을 구현해줘:
 
 1. 세션 생성을 위한 Zod 유효성 검사 스키마 만들기
-2. actions/sessions.ts에 server action 만들기:
+2. actions/todos.ts에 server action 만들기:
    - 입력 유효성 검사, 인증 확인, DB 삽입을 수행하는 createSession action
    - { success: boolean, error?: string } 반환
-   - 성공 후 revalidatePath("/dashboard/sessions") 호출
+   - 성공 후 revalidatePath("/todos") 호출
 
 3. 폼 UI 만들기:
    - shadcn/ui Dialog를 사용해서 모달로 폼 표시
@@ -111,15 +111,15 @@ docs/data-mutations.md를 읽어줘. "새 학습 세션" 폼을 구현해줘:
 
 ### Step 3: 생성된 Server Action 확인
 
-Claude가 생성한 `actions/sessions.ts`를 확인합니다:
+Claude가 생성한 `actions/todos.ts`를 확인합니다:
 
 ```typescript
-// actions/sessions.ts - 기대하는 패턴
+// actions/todos.ts - 기대하는 패턴
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+
 import { db } from "@/db";
-import { studySessions } from "@/db/schema";
+import { todos } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -142,9 +142,7 @@ export async function createSession(
   formData: FormData
 ): Promise<ActionResult> {
   // 1. 인증 확인
-  const { userId } = await auth();
-  if (!userId) {
-    return { success: false, error: "Unauthorized" };
+  
   }
 
   // 2. 입력 유효성 검사
@@ -165,8 +163,7 @@ export async function createSession(
 
   // 3. 데이터베이스 삽입
   try {
-    await db.insert(studySessions).values({
-      userId,
+    await db.insert(todos).values({
       date: parsed.data.date,
       startTime: parsed.data.startTime,
       endTime: parsed.data.endTime,
@@ -177,8 +174,8 @@ export async function createSession(
   }
 
   // 4. 캐시 무효화
-  revalidatePath("/dashboard/sessions");
-  revalidatePath("/dashboard");
+  revalidatePath("/todos");
+  revalidatePath("/todos");
 
   return { success: true };
 }
@@ -187,7 +184,7 @@ export async function createSession(
 확인할 포인트:
 
 - [x] `"use server"` 지시어
-- [x] `auth()`로 인증 확인
+- [x] Zod 스키마로 유효성 검사
 - [x] Zod 스키마로 유효성 검사
 - [x] `try/catch`로 에러 처리
 - [x] `revalidatePath()`로 캐시 무효화
@@ -277,20 +274,20 @@ const [state, formAction, isPending] = useActionState(action, initialState);
 ```
 docs/data-mutations.md 패턴을 따라 과목 관리를 위한 CRUD actions과 UI를 만들어줘:
 
-1. actions/subjects.ts 만들기:
+1. actions/categories.ts 만들기:
    - createSubject(prevState, formData): name과 color 필드, Zod로 유효성 검사
    - updateSubject(prevState, formData): id로 name과 color 업데이트
    - deleteSubject(subjectId): 소유권 확인 후 id로 삭제
 
-2. /dashboard/subjects에 과목 관리 페이지 만들기:
+2. /categories에 과목 관리 페이지 만들기:
    - 현재 사용자의 모든 과목 목록 표시
    - 각 과목은 컬러 badge와 함께 이름 표시
    - "과목 추가" 버튼으로 다이얼로그 폼 열기
    - 각 과목에 편집/삭제 버튼
    - 삭제 확인용 shadcn/ui AlertDialog 사용
 
-3. lib/queries/subjects.ts에 쿼리 함수 만들기:
-   - getSubjectsByUserId(userId)
+3. lib/queries/categories.ts에 쿼리 함수 만들기:
+   - getCategories()
 ```
 
 ### Step 6: Zod 유효성 검사 확인
@@ -298,7 +295,7 @@ docs/data-mutations.md 패턴을 따라 과목 관리를 위한 CRUD actions과 
 생성된 코드에서 Zod 스키마가 올바르게 정의되었는지 확인합니다:
 
 ```typescript
-// actions/subjects.ts - Zod 스키마 예시
+// actions/categories.ts - Zod 스키마 예시
 const createSubjectSchema = z.object({
   name: z
     .string()
@@ -344,7 +341,7 @@ pnpm dev를 실행하고 테스트해줘:
 │   Server Action      │
 │   (actions/*.ts)     │
 │                      │
-│  1. auth() 확인       │
+│  1. 입력값 유효성 검사       │
 │  2. Zod 유효성 검사   │
 │  3. DB 변이           │
 │  4. revalidatePath() │

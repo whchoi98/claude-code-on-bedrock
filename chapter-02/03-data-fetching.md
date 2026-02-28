@@ -41,12 +41,12 @@ export default async function Page() {
 ## 핵심 원칙
 - 데이터 패칭에 서버 컴포넌트 사용 (초기 데이터에 useEffect/useState 사용 금지)
 - 서버 컴포넌트에서 직접 패칭 가능한 데이터에 API 라우트를 만들지 않음
-- 쿼리 전에 항상 Clerk의 auth()로 인증
+- 쿼리 함수는 lib/queries/ 디렉토리에 생성
 
 ## 쿼리 함수
 - lib/queries/ 디렉토리에 재사용 가능한 쿼리 함수 생성
-- 도메인 엔티티별로 별도 파일 생성 (예: lib/queries/sessions.ts, lib/queries/subjects.ts)
-- 모든 쿼리 함수는 userId를 매개변수로 받아야 함
+- 도메인 엔티티별로 별도 파일 생성 (예: lib/queries/sessions.ts, lib/queries/categories.ts)
+- 모든 쿼리 함수는 도메인별 파일로 분리
 - Drizzle ORM의 query builder와 relations 사용
 - 타입이 지정된 결과 반환
 
@@ -54,15 +54,14 @@ export default async function Page() {
 ```typescript
 // lib/queries/sessions.ts
 import { db } from "@/db";
-import { studySessions, sessionSubjects, subjects } from "@/db/schema";
+import { todos, categories, categories } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
-export async function getSessionsByUserId(userId: string) {
+export async function getTodos() {
   return db
     .select()
-    .from(studySessions)
-    .where(eq(studySessions.userId, userId))
-    .orderBy(desc(studySessions.date));
+    .from(todos)
+    .orderBy(desc(todos.date));
 }
 ```
 
@@ -84,7 +83,7 @@ export async function getSessionsByUserId(userId: string) {
 → *이 프롬프트는 방금 작성한 데이터 패칭 문서를 기반으로, 실제 세션 목록 페이지와 쿼리 함수를 한 번에 생성하기 위한 것입니다:*
 
 ```
-docs/data-fetching.md를 읽어줘. 다음 요구사항으로 /dashboard/sessions에 학습 세션 목록 페이지를 만들어줘:
+docs/data-fetching.md를 읽어줘. 다음 요구사항으로 /todos에 학습 세션 목록 페이지를 만들어줘:
 - 서버 컴포넌트를 사용해서 현재 사용자의 모든 세션을 패칭
 - 각 세션의 날짜, 총 학습 시간, 학습한 과목 표시
 - shadcn/ui의 Table 컴포넌트 사용
@@ -117,33 +116,31 @@ lib/
 ```typescript
 // lib/queries/sessions.ts - 기대하는 패턴
 import { db } from "@/db";
-import { studySessions, sessionSubjects, subjects } from "@/db/schema";
+import { todos, categories, categories } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
-export async function getSessionsByUserId(userId: string) {
+export async function getTodos() {
   return db
     .select({
-      id: studySessions.id,
-      date: studySessions.date,
-      startTime: studySessions.startTime,
-      endTime: studySessions.endTime,
-      notes: studySessions.notes,
-      createdAt: studySessions.createdAt,
+      id: todos.id,
+      date: todos.date,
+      startTime: todos.startTime,
+      endTime: todos.endTime,
+      notes: todos.notes,
+      createdAt: todos.createdAt,
     })
-    .from(studySessions)
-    .where(eq(studySessions.userId, userId))
-    .orderBy(desc(studySessions.date));
+    .from(todos)
+    .orderBy(desc(todos.date));
 }
 
-export async function getSessionWithDetails(sessionId: string, userId: string) {
+export async function getTodoWithCategory(todoId: string) {
   // 세션 상세 정보 + 관련 과목 + 학습 블록
   const session = await db
     .select()
-    .from(studySessions)
-    .where(eq(studySessions.id, sessionId))
+    .from(todos)
+    .where(eq(todos.id, sessionId))
     .limit(1);
 
-  if (!session[0] || session[0].userId !== userId) {
     return null;
   }
 
@@ -153,20 +150,20 @@ export async function getSessionWithDetails(sessionId: string, userId: string) {
 
 확인할 포인트:
 
-- [x] `userId`를 파라미터로 받아서 데이터 필터링
+- [x] Drizzle query builder 사용
 - [x] Drizzle ORM의 query builder 사용
 - [x] 타입 안전한 반환값
 - [x] 정렬(orderBy) 적용
 
 ### Step 5: 서버 컴포넌트 페이지 확인
 
-`app/dashboard/sessions/page.tsx` 파일을 살펴봅니다:
+`app/todos/page.tsx` 파일을 살펴봅니다:
 
 ```typescript
-// app/dashboard/sessions/page.tsx - 기대하는 패턴
-import { auth } from "@clerk/nextjs/server";
+// app/todos/page.tsx - 기대하는 패턴
+
 import { redirect } from "next/navigation";
-import { getSessionsByUserId } from "@/lib/queries/sessions";
+import { getTodos } from "@/lib/queries/sessions";
 import {
   Table,
   TableBody,
@@ -177,10 +174,10 @@ import {
 } from "@/components/ui/table";
 
 export default async function SessionsPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  
+  
 
-  const sessions = await getSessionsByUserId(userId);
+  const todos = await getTodos();
 
   return (
     <div className="space-y-4">
@@ -200,7 +197,7 @@ export default async function SessionsPage() {
             <TableRow key={session.id}>
               <TableCell>{session.date}</TableCell>
               <TableCell>{/* duration 계산 */}</TableCell>
-              <TableCell>{/* subjects 표시 */}</TableCell>
+              <TableCell>{/* categories 표시 */}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -214,7 +211,7 @@ export default async function SessionsPage() {
 
 - [x] `"use client"` 없음 (서버 컴포넌트)
 - [x] `async` 함수로 선언
-- [x] `auth()`로 인증 확인
+- [x] 서버 컴포넌트에서 직접 쿼리 호출
 - [x] 쿼리 함수를 직접 호출 (API 라우트 불필요)
 - [x] shadcn/ui Table 컴포넌트 사용
 
@@ -223,7 +220,7 @@ export default async function SessionsPage() {
 `loading.tsx` 파일을 확인합니다:
 
 ```typescript
-// app/dashboard/sessions/loading.tsx
+// app/todos/loading.tsx
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SessionsLoading() {
@@ -261,7 +258,7 @@ Next.js App Router는 `loading.tsx` 파일을 자동으로 React Suspense 경계
 │   Server Component      │
 │   (page.tsx)            │
 │                         │
-│  1. auth() 호출          │
+│  1. 쿼리 함수 호출         │
 │  2. 쿼리 함수 호출       │
 │  3. JSX 렌더링           │
 └─────────┬───────────────┘
@@ -271,7 +268,7 @@ Next.js App Router는 `loading.tsx` 파일을 자동으로 React Suspense 경계
 │   Query Function        │
 │   (lib/queries/*.ts)    │
 │                         │
-│  - userId 파라미터       │
+│  - 쿼리 파라미터       │
 │  - Drizzle query builder│
 │  - 타입 안전한 반환값     │
 └─────────┬───────────────┘
@@ -279,7 +276,7 @@ Next.js App Router는 `loading.tsx` 파일을 자동으로 React Suspense 경계
           ▼
 ┌─────────────────────────┐
 │   Database              │
-│   (Neon Postgres)       │
+│   (PostgreSQL (로컬))       │
 └─────────────────────────┘
 ```
 
@@ -291,7 +288,7 @@ Next.js App Router는 `loading.tsx` 파일을 자동으로 React Suspense 경계
 | 쿼리 함수 | `lib/queries/`에 도메인별로 분리된 재사용 가능한 함수 |
 | `loading.tsx` | 자동 Suspense 경계로 로딩 UI 표시 |
 | `error.tsx` | 에러 경계로 에러 UI 표시 |
-| `auth()` | 모든 쿼리에서 userId 확인 필수 |
+| 쿼리 함수 | lib/queries/에 도메인별로 분리된 재사용 가능한 함수 |
 
 ---
 

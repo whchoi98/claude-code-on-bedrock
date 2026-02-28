@@ -1,6 +1,6 @@
 # 1.3 Next.js 프로젝트 생성
 
-> Claude Code를 사용하여 학습 트래커 프로젝트의 기반이 될 Next.js 15 프로젝트를 생성합니다.
+> Claude Code를 사용하여 Todo 앱 프로젝트의 기반이 될 Next.js 15 프로젝트를 생성합니다.
 
 > 🎯 **이 섹션에서 배울 Claude Code 기능**: `claude` 명령으로 대화 시작, 자연어로 프로젝트 생성
 
@@ -15,7 +15,7 @@
 터미널에서 프로젝트 디렉토리를 만들고 Claude Code를 시작합니다:
 
 ```bash
-mkdir study-tracker && cd study-tracker
+mkdir todo-app && cd todo-app
 claude
 ```
 
@@ -25,11 +25,11 @@ Claude Code 인터페이스가 나타나면 준비가 완료된 것입니다.
 
 Claude Code에 다음 프롬프트를 입력합니다:
 
-→ *이 프롬프트는 Next.js 15 프로젝트를 원하는 설정으로 생성하기 위한 것입니다:*
+> *이 프롬프트는 Next.js 15 프로젝트를 원하는 설정으로 생성하기 위한 것입니다:*
 
 ```
 Next.js 15 프로젝트를 App Router, TypeScript, Tailwind CSS, ESLint와 함께 생성해줘.
-패키지 매니저는 pnpm을 사용하고, 프로젝트 이름은 "study-tracker"로 해줘.
+패키지 매니저는 pnpm을 사용하고, 프로젝트 이름은 "todo-app"으로 해줘.
 현재 디렉토리에 초기화해줘 (하위 디렉토리가 아닌).
 ```
 
@@ -47,7 +47,7 @@ Claude Code는 이 프롬프트를 받으면 `pnpm create next-app` 명령을 �
 
 프로젝트가 생성되면 Claude Code에 구조를 확인해 봅니다:
 
-→ *이 프롬프트는 생성된 프로젝트의 파일 구조를 확인하기 위한 것입니다:*
+> *이 프롬프트는 생성된 프로젝트의 파일 구조를 확인하기 위한 것입니다:*
 
 ```
 프로젝트 구조를 보여줘. 어떤 파일들이 생성되었어?
@@ -56,7 +56,7 @@ Claude Code는 이 프롬프트를 받으면 `pnpm create next-app` 명령을 �
 다음과 유사한 구조가 생성되어야 합니다:
 
 ```
-study-tracker/
+todo-app/
 ├── app/
 │   ├── favicon.ico
 │   ├── globals.css
@@ -66,7 +66,6 @@ study-tracker/
 │   ├── file.svg
 │   ├── globe.svg
 │   ├── next.svg
-│   ├── vercel.svg
 │   └── window.svg
 ├── .eslintrc.json
 ├── .gitignore
@@ -83,7 +82,7 @@ study-tracker/
 
 프로젝트의 컨텍스트를 Claude Code에 알려주는 `CLAUDE.md` 파일을 생성합니다. Claude Code의 `/init` 명령어를 사용합니다:
 
-→ *이 프롬프트는 프로젝트를 분석하여 CLAUDE.md 파일을 자동 생성하기 위한 것입니다:*
+> *이 프롬프트는 프로젝트를 분석하여 CLAUDE.md 파일을 자동 생성하기 위한 것입니다:*
 
 ```
 /init
@@ -94,7 +93,7 @@ study-tracker/
 생성된 `CLAUDE.md`를 확인한 후 다음 내용이 포함되어 있는지 확인하고, 없으면 추가합니다:
 
 ```markdown
-# Study Tracker
+# Todo App
 
 ## 프로젝트
 - Next.js 15 App Router, TypeScript
@@ -117,7 +116,7 @@ study-tracker/
 
 ### Claude Code에서 직접 실행
 
-→ *이 프롬프트는 개발 서버를 실행하여 프로젝트가 정상 동작하는지 확인하기 위한 것입니다:*
+> *이 프롬프트는 개발 서버를 실행하여 프로젝트가 정상 동작하는지 확인하기 위한 것입니다:*
 
 ```
 pnpm dev로 개발 서버를 실행해줘
@@ -141,7 +140,7 @@ Next.js 기본 페이지가 표시되면 프로젝트 생성이 성공한 것입
 
 아직 Git이 초기화되지 않았다면 초기화합니다:
 
-→ *이 프롬프트는 Git 리포지토리를 초기화하고 첫 커밋을 생성하기 위한 것입니다:*
+> *이 프롬프트는 Git 리포지토리를 초기화하고 첫 커밋을 생성하기 위한 것입니다:*
 
 ```
 Git 리포지토리를 초기화하고 "Initial Next.js 15 project setup" 메시지로 첫 커밋을 만들어줘.

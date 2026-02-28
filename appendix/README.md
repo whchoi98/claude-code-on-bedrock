@@ -30,11 +30,11 @@
 |------|-----|
 | Next.js 문서 | [https://nextjs.org/docs](https://nextjs.org/docs) |
 | Drizzle ORM 문서 | [https://orm.drizzle.team/docs/overview](https://orm.drizzle.team/docs/overview) |
-| Clerk 문서 | [https://clerk.com/docs](https://clerk.com/docs) |
-| Neon 문서 | [https://neon.tech/docs](https://neon.tech/docs) |
+| 
+| 
 | shadcn/ui 문서 | [https://ui.shadcn.com](https://ui.shadcn.com) |
 | Tailwind CSS 문서 | [https://tailwindcss.com/docs](https://tailwindcss.com/docs) |
-| Vercel 문서 | [https://vercel.com/docs](https://vercel.com/docs) |
+| 
 | Zod 문서 | [https://zod.dev](https://zod.dev) |
 
 ---
@@ -157,7 +157,7 @@ aws sts get-caller-identity
 
 Bedrock 모드에서는 인증이 AWS 자격증명으로 처리되므로 `/login`과 `/logout` 명령이 비활성화됩니다. 이는 정상 동작입니다.
 
-### Neon DB 연결 오류
+### PostgreSQL 로컬 연결 오류
 
 #### `connection refused` 또는 `ECONNREFUSED`
 
@@ -171,29 +171,11 @@ cat .env.local | grep DATABASE_URL
 
 #### SSL 관련 오류
 
-Neon은 SSL 연결이 필수입니다. 연결 문자열에 `?sslmode=require`가 포함되어 있는지 확인하세요.
+PostgreSQL은 SSL 연결이 필수입니다. 연결 문자열에 `?sslmode=require`가 포함되어 있는지 확인하세요.
 
-### Clerk 인증 오류
+### 삭제됨
 
-#### `Clerk: Missing publishable key`
 
-```bash
-# .env.local 파일에 키가 있는지 확인
-cat .env.local | grep CLERK
-
-# 필요한 환경변수
-# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-# CLERK_SECRET_KEY=sk_test_...
-```
-
-#### 미들웨어 관련 오류
-
-```bash
-# middleware.ts 파일이 프로젝트 루트에 있는지 확인
-ls middleware.ts
-
-# 미들웨어 내용 확인 - clerkMiddleware()가 export되어 있어야 함
-```
 
 ### 빌드 오류
 
@@ -230,7 +212,7 @@ CLAUDE.md가 너무 길거나 모호하지 않은지 확인하세요.
 # 이렇게 하세요:
 /clear
 # 그 다음, 에러 메시지와 함께 구체적으로 요청:
-"app/dashboard/page.tsx에서 발생하는 TypeError: Cannot read property 'map' of undefined 에러를 수정해줘. sessions 변수가 null일 수 있는 케이스를 처리해야 해."
+"app/todos/page.tsx에서 발생하는 TypeError: Cannot read property 'map' of undefined 에러를 수정해줘. sessions 변수가 null일 수 있는 케이스를 처리해야 해."
 ```
 
 #### "컨텍스트가 부족하다고 해요"
@@ -292,27 +274,26 @@ aws ce get-cost-and-usage \
 
 ## DB 스키마 참고
 
-학습 트래커 애플리케이션의 데이터베이스 스키마입니다.
+Todo 앱 애플리케이션의 데이터베이스 스키마입니다.
 
 ### ERD (Entity Relationship Diagram)
 
 ```
-study_sessions ──┬── session_subjects ──┬── study_blocks
+todos ──┬── categories ──┬── todos
                  │                      │
                  └── (1:N)              └── (1:N)
 
-subjects ────────── session_subjects
+categories ────────── categories
                     (N:M 관계)
 ```
 
 ### 테이블 구조
 
-#### study_sessions (학습 세션)
+#### todos (학습 세션)
 
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | id | UUID | Primary Key |
-| userId | TEXT | Clerk 사용자 ID |
 | date | DATE | 학습 날짜 |
 | startTime | TIMESTAMP | 시작 시간 |
 | endTime | TIMESTAMP | 종료 시간 |
@@ -320,30 +301,29 @@ subjects ────────── session_subjects
 | createdAt | TIMESTAMP | 생성 시각 |
 | updatedAt | TIMESTAMP | 수정 시각 |
 
-#### subjects (과목)
+#### categories (과목)
 
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | id | UUID | Primary Key |
-| userId | TEXT | Clerk 사용자 ID |
 | name | TEXT | 과목명 (예: 수학, 영어) |
 | color | TEXT | 색상 코드 (예: #3B82F6) |
 | createdAt | TIMESTAMP | 생성 시각 |
 
-#### session_subjects (세션-과목 연결)
+#### categories (세션-과목 연결)
 
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | id | UUID | Primary Key |
-| sessionId | UUID | FK → study_sessions.id |
-| subjectId | UUID | FK → subjects.id |
+| sessionId | UUID | FK → todos.id |
+| subjectId | UUID | FK → categories.id |
 
-#### study_blocks (학습 블록)
+#### todos (학습 블록)
 
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | id | UUID | Primary Key |
-| sessionSubjectId | UUID | FK → session_subjects.id |
+| sessionSubjectId | UUID | FK → categories.id |
 | durationMinutes | INTEGER | 학습 시간 (분) |
 | pagesRead | INTEGER | 읽은 페이지 수 (선택) |
 | notes | TEXT | 메모 (선택) |
@@ -354,9 +334,8 @@ subjects ────────── session_subjects
 ```typescript
 import { pgTable, uuid, text, date, timestamp, integer } from 'drizzle-orm/pg-core';
 
-export const studySessions = pgTable('study_sessions', {
+export const todos = pgTable('todos', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
   date: date('date').notNull(),
   startTime: timestamp('start_time'),
   endTime: timestamp('end_time'),
@@ -365,23 +344,22 @@ export const studySessions = pgTable('study_sessions', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export const subjects = pgTable('subjects', {
+export const categories = pgTable('categories', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
   name: text('name').notNull(),
   color: text('color').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const sessionSubjects = pgTable('session_subjects', {
+export const categories = pgTable('categories', {
   id: uuid('id').defaultRandom().primaryKey(),
-  sessionId: uuid('session_id').references(() => studySessions.id, { onDelete: 'cascade' }).notNull(),
-  subjectId: uuid('subject_id').references(() => subjects.id, { onDelete: 'cascade' }).notNull(),
+  sessionId: uuid('session_id').references(() => todos.id, { onDelete: 'cascade' }).notNull(),
+  subjectId: uuid('subject_id').references(() => categories.id, { onDelete: 'cascade' }).notNull(),
 });
 
-export const studyBlocks = pgTable('study_blocks', {
+export const todos = pgTable('todos', {
   id: uuid('id').defaultRandom().primaryKey(),
-  sessionSubjectId: uuid('session_subject_id').references(() => sessionSubjects.id, { onDelete: 'cascade' }).notNull(),
+  sessionSubjectId: uuid('session_subject_id').references(() => categories.id, { onDelete: 'cascade' }).notNull(),
   durationMinutes: integer('duration_minutes').notNull(),
   pagesRead: integer('pages_read'),
   notes: text('notes'),

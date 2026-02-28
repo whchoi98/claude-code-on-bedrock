@@ -1,6 +1,6 @@
-# 4.2 학습 블록 기록 기능
+# 4.2 할 일 일괄 관리 기능
 
-> 세션 상세 페이지에서 과목별 학습 블록을 기록하고, 실시간 합산 및 자체 검증까지 수행합니다.
+> 할 일 목록에서 여러 항목을 선택하여 일괄 완료, 일괄 삭제, 일괄 카테고리 변경을 수행합니다.
 
 > 🎯 **이 섹션에서 배울 Claude Code 기능**: 복합 기능 구현, 자체 검증
 
@@ -8,38 +8,45 @@
 
 ## 개요
 
-이 섹션에서는 학습 세션의 상세 페이지(`/dashboard/sessions/[id]`)를 구현합니다. 사용자는 세션에 연결된 과목별로 학습 블록을 추가/수정/삭제할 수 있으며, 전체 학습 시간이 실시간으로 합산됩니다.
+이 섹션에서는 할 일 목록 페이지(`/todos`)에서 여러 항목을 체크박스로 선택하고, 선택된 항목들에 대해 일괄 작업을 수행하는 기능을 구현합니다.
+
+### 구현할 기능
+
+- 체크박스로 여러 할 일 선택 (전체 선택/해제)
+- 선택된 항목 일괄 완료 처리
+- 선택된 항목 일괄 삭제 (확인 다이얼로그)
+- 선택된 항목 일괄 카테고리 변경
 
 ### DB 스키마 복습
 
 ```
-session_subjects: id, sessionId, subjectId
-study_blocks: id, sessionSubjectId, durationMinutes, pagesRead, notes, createdAt
+todos: id, title, description, completed, priority, dueDate, categoryId, createdAt, updatedAt
+categories: id, name, color, createdAt
 ```
 
-- 하나의 세션에 여러 과목이 연결됨 (`session_subjects`)
-- 각 세션-과목 조합에 여러 학습 블록이 연결됨 (`study_blocks`)
-- 학습 블록에는 시간(분), 읽은 페이지 수(선택), 메모(선택)가 포함
+- 하나의 할 일에는 하나의 카테고리가 연결될 수 있음 (`categoryId`)
+- 완료 상태는 `completed` 필드로 관리
+- 우선순위는 `priority` 필드로 관리
 
-## Step 1: 학습 블록 상세 기록 기능 구현
+## Step 1: 복합 기능 구현 요청
 
 복합적인 기능을 요청할 때는 Claude에게 먼저 생각할 시간을 주는 것이 좋습니다. `Think about this carefully`를 프롬프트에 포함하면 Claude가 extended thinking 모드를 활성화하여 더 체계적으로 접근합니다.
 
 ### Claude에게 요청
 
-→ *이 프롬프트는 학습 블록 CRUD 기능을 종합적으로 구현하기 위한 것입니다 (Extended Thinking 활성화):*
+→ *이 프롬프트는 할 일 일괄 관리 기능을 종합적으로 구현하기 위한 것입니다 (Extended Thinking 활성화):*
 
 ```
-이것에 대해 깊이 생각해줘. 상세 학습 블록 기록 기능을 구현해줘:
+이것에 대해 깊이 생각해줘. 할 일 일괄 관리 기능을 구현해줘:
 
-학습 세션을 볼 때, 사용자가 다음을 할 수 있어야 해:
-1. 세션에 연결된 모든 과목 확인
-2. 각 과목에 대해 학습 블록 추가/수정/삭제
-3. 각 학습 블록: durationMinutes, pagesRead (선택), notes (선택)
-4. 과목별, 전체 세션의 누적 합계 표시
-5. startTime + 총 시간 기반으로 세션 endTime 자동 계산
+할 일 목록 페이지(/todos)에서 사용자가 다음을 할 수 있어야 해:
+1. 각 할 일 항목에 체크박스 추가 (전체 선택/해제 포함)
+2. 선택된 항목들을 일괄 완료 처리
+3. 선택된 항목들을 일괄 삭제 (확인 다이얼로그 포함)
+4. 선택된 항목들의 카테고리를 일괄 변경
+5. 선택된 항목 수를 실시간으로 표시
+6. 작업 완료 후 선택 상태 초기화
 
-/dashboard/sessions/[id]에 인라인 편집이 가능한 UI를 만들어줘.
 변이에는 server actions를 사용해줘. docs/data-mutations.md 패턴을 따라줘.
 ```
 
@@ -49,43 +56,54 @@ study_blocks: id, sessionSubjectId, durationMinutes, pagesRead, notes, createdAt
 
 | 파일 | 역할 |
 |------|------|
-| `app/dashboard/sessions/[id]/page.tsx` | 세션 상세 서버 컴포넌트 |
-| `components/study-blocks/block-list.tsx` | 학습 블록 목록 (클라이언트 컴포넌트) |
-| `components/study-blocks/block-form.tsx` | 블록 추가/수정 인라인 폼 |
-| `actions/study-blocks.ts` | 학습 블록 CRUD 서버 액션 |
-| `lib/queries/study-blocks.ts` | 블록 데이터 조회 함수 |
+| `app/todos/page.tsx` | 할 일 목록 서버 컴포넌트 |
+| `components/todos/todo-list-client.tsx` | 체크박스 상태 관리 (클라이언트 컴포넌트) |
+| `components/todos/batch-action-bar.tsx` | 일괄 작업 버튼 바 |
+| `actions/todos.ts` | 일괄 작업 서버 액션 (batchCompleteTodos, batchDeleteTodos, batchUpdateCategory) |
+| `lib/queries/todos.ts` | 할 일 데이터 조회 함수 |
 
 ## Step 2: 서버 컴포넌트 + 클라이언트 인터랙션
 
-학습 블록 기능은 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합해야 합니다.
+일괄 관리 기능은 서버 컴포넌트와 클라이언트 컴포넌트를 적절히 조합해야 합니다.
 
 ### 서버 컴포넌트가 담당하는 부분
 
-- 세션 데이터 조회 (Drizzle ORM 쿼리)
-- 과목 목록 + 학습 블록 데이터 페칭
-- 인증 확인 (`auth()`)
+- 할 일 목록 데이터 조회 (Drizzle ORM 쿼리)
+- 카테고리 목록 데이터 패칭
 
 ### 클라이언트 컴포넌트가 담당하는 부분
 
-- 인라인 편집 UI (`"use client"`)
-- 실시간 합산 로직 (블록 추가/수정 시 즉시 반영)
+- 체크박스 상태 관리 (`"use client"`)
+- 선택된 ID 배열 관리
+- 전체 선택/해제 로직
+- 일괄 작업 버튼 활성화/비활성화
 - 낙관적 업데이트 (서버 응답 전에 UI 반영)
 
-### 실시간 합산 로직
+### 선택 상태 관리 로직
 
-과목별 합산과 전체 합산이 실시간으로 업데이트되어야 합니다:
+체크박스 선택과 일괄 작업이 실시간으로 연동되어야 합니다:
 
 ```typescript
-// 예시: 합산 로직
-const subjectTotal = blocks
-  .filter(b => b.sessionSubjectId === subjectId)
-  .reduce((sum, b) => sum + b.durationMinutes, 0);
+// 예시: 선택 상태 관리 로직
+const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-const sessionTotal = blocks
-  .reduce((sum, b) => sum + b.durationMinutes, 0);
+const toggleSelect = (id: number) => {
+  setSelectedIds(prev =>
+    prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+  );
+};
 
-// endTime 자동 계산
-const endTime = addMinutes(session.startTime, sessionTotal);
+const toggleSelectAll = () => {
+  setSelectedIds(prev =>
+    prev.length === todos.length ? [] : todos.map(t => t.id)
+  );
+};
+
+// 일괄 완료 처리
+const handleBatchComplete = async () => {
+  await batchCompleteTodos(selectedIds);
+  setSelectedIds([]);
+};
 ```
 
 Claude가 서버 컴포넌트와 클라이언트 컴포넌트 분리를 잘못할 경우, 다음과 같이 수정 요청합니다:
@@ -93,8 +111,8 @@ Claude가 서버 컴포넌트와 클라이언트 컴포넌트 분리를 잘못�
 → *이 프롬프트는 서버/클라이언트 컴포넌트 분리가 잘못되었을 때 수정을 요청하기 위한 것입니다:*
 
 ```
-block-list.tsx는 인라인 편집 상태를 관리하기 때문에 "use client"가 필요해.
-하지만 세션 데이터 페칭은 서버 컴포넌트(page.tsx)에 남겨야 해.
+todo-list-client.tsx는 체크박스 상태를 관리하기 때문에 "use client"가 필요해.
+하지만 할 일 목록 데이터 페칭은 서버 컴포넌트(page.tsx)에 남겨야 해.
 초기 데이터를 클라이언트 컴포넌트에 props로 전달해줘.
 ```
 
@@ -107,8 +125,8 @@ block-list.tsx는 인라인 편집 상태를 관리하기 때문에 "use client"
 → *이 프롬프트는 구현된 기능을 Claude에게 직접 테스트하도록 요청하기 위한 것입니다:*
 
 ```
-학습 블록 기록 기능을 테스트해줘: 세션을 생성하고, 3개 과목을 추가하고, 각각에 학습 블록을
-추가해줘. 합계가 정확한지, 세션 종료 시간이 업데이트되는지 확인해줘.
+할 일 일괄 관리 기능을 테스트해줘: 할 일을 5개 생성하고, 3개를 선택하여 일괄 완료 처리해줘.
+그 다음 2개를 선택하여 일괄 삭제해줘. 결과가 정확한지 확인해줘.
 ```
 
 Claude는 다음과 같은 과정을 수행합니다:
@@ -127,15 +145,15 @@ Claude는 다음과 같은 과정을 수행합니다:
 → *이 프롬프트는 검증 기준을 명시하여 Claude가 체계적으로 자체 테스트하도록 하기 위한 것입니다:*
 
 ```
-학습 블록 기능이 올바르게 작동하는지 검증해줘:
+할 일 일괄 관리 기능이 올바르게 작동하는지 검증해줘:
 
 테스트 기준:
-1. 학습 블록을 추가하면 해당 과목의 총 시간이 즉시 업데이트되어야 함
-2. 여러 과목에 블록을 추가하면 세션 전체 합계가 업데이트되어야 함
-3. 세션 endTime은 startTime + 모든 블록의 총 분과 같아야 함
-4. 블록을 삭제하면 합계가 감소해야 함
-5. pagesRead와 notes가 비어 있어도 허용되어야 함 (선택 항목)
-6. 세션 소유자(일치하는 userId)만 블록을 보고 편집할 수 있어야 함
+1. 여러 항목 선택 후 일괄 완료 → 선택된 항목이 완료 상태로 변경되어야 함
+2. 일괄 삭제 → 확인 다이얼로그 표시 → 확인 후 삭제되어야 함
+3. 일괄 카테고리 변경 → 선택된 항목의 카테고리가 업데이트되어야 함
+4. 전체 선택/해제가 정상 동작해야 함
+5. 작업 완료 후 선택 상태가 초기화되어야 함
+6. 페이지 새로고침 후에도 변경 사항이 유지되어야 함
 
 개발 서버를 실행하고 각 기준을 검증해줘. 각 항목의 통과/실패를 보고해줘.
 ```
@@ -145,7 +163,7 @@ Claude는 다음과 같은 과정을 수행합니다:
 - Claude가 빌드 에러를 직접 발견하고 수정
 - 런타임 에러를 서버 로그에서 확인
 - 데이터 무결성 문제를 미리 감지
-- 인증 관련 버그 사전 발견
+- UI 인터랙션 관련 버그 사전 발견
 
 {% hint style="info" %}
 **Best Practice**: 복잡한 기능을 구현할 때는 항상 검증 기준을 함께 제공하세요. Claude가 "완료"라고 말해도 실제로는 에지 케이스가 남아있을 수 있습니다. 검증 기준이 있으면 Claude가 스스로 확인합니다.
@@ -158,10 +176,10 @@ Claude는 다음과 같은 과정을 수행합니다:
 → *이 프롬프트는 기본 기능 완성 후 추가적인 UX 개선을 요청하기 위한 것입니다:*
 
 ```
-학습 블록 기능에 다음 개선사항을 추가해줘:
-1. 과목 내에서 블록 순서를 드래그 앤 드롭으로 변경
-2. 한 과목에서 다른 과목으로 블록 복사
-3. 빠른 추가 템플릿 (예: "30분 독서", "1시간 문제 풀기")
+할 일 일괄 관리 기능에 다음 개선사항을 추가해줘:
+1. 선택된 항목 수를 상단 바에 실시간 표시
+2. 일괄 작업 중 로딩 스피너 표시
+3. 작업 완료 후 toast 알림 표시
 ```
 
 {% hint style="warning" %}
@@ -184,10 +202,10 @@ Claude는 다음과 같은 과정을 수행합니다:
 
 이 섹션을 완료하면 다음을 확인하세요:
 
-- [ ] 학습 블록 CRUD 동작 확인 (추가/수정/삭제)
-- [ ] 과목별, 전체 세션 합산이 실시간으로 업데이트됨
-- [ ] 세션 endTime이 자동 계산됨
+- [ ] 체크박스 선택 동작 확인 (개별 선택, 전체 선택/해제)
+- [ ] 일괄 완료/삭제/카테고리 변경 동작 확인
 - [ ] 서버 컴포넌트와 클라이언트 컴포넌트가 올바르게 분리됨
+- [ ] 페이지 새로고침 후 변경 사항이 유지됨
 
 ---
 

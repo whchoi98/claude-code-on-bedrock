@@ -1,6 +1,6 @@
 # 4.4 에이전트 스킬 (Agent Skills)
 
-> Claude가 자동으로 활용하는 스킬과 커스텀 서브에이전트를 만들어 학습 트래커 개발을 효율화합니다.
+> Claude가 자동으로 활용하는 스킬과 커스텀 서브에이전트를 만들어 Todo 앱 개발을 효율화합니다.
 
 > 🎯 **이 섹션에서 배울 Claude Code 기능**: 자동 스킬, 서브에이전트, 커스텀 에이전트 (.claude/agents/)
 
@@ -42,18 +42,18 @@ name: api-conventions
 description: Server action and API conventions for the study tracker. Use when creating or modifying server actions and data access patterns.
 ---
 
-# Study Tracker API Conventions
+# Todo App API Conventions
 
 ## Server Actions
 - Place in `actions/` directory
 - Always validate with zod
-- Always check `auth()` for userId
+- Always validate input with Zod
 - Return `{ success: boolean, error?: string, data?: T }`
 - Use `revalidatePath()` after mutations
 
 ## Data Access
 - Place query functions in `lib/queries/`
-- Always filter by userId
+- Use Drizzle query builder with relations
 - Use Drizzle query builder with relations
 - Handle pagination with limit/offset
 
@@ -62,10 +62,10 @@ description: Server action and API conventions for the study tracker. Use when c
 ```typescript
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+
 import { z } from "zod";
 import { db } from "@/db";
-import { studyBlocks } from "@/db/schema";
+import { todos } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 
 const createBlockSchema = z.object({
@@ -75,18 +75,17 @@ const createBlockSchema = z.object({
   notes: z.string().optional(),
 });
 
-export async function createStudyBlock(input: z.infer<typeof createBlockSchema>) {
-  const { userId } = await auth();
-  if (!userId) return { success: false, error: "Unauthorized" };
+export async function createTodo(input: z.infer<typeof createBlockSchema>) {
+  
 
   const validated = createBlockSchema.safeParse(input);
   if (!validated.success) return { success: false, error: "Invalid input" };
 
-  const block = await db.insert(studyBlocks).values({
+  const block = await db.insert(todos).values({
     ...validated.data,
   }).returning();
 
-  revalidatePath("/dashboard");
+  revalidatePath("/todos");
   return { success: true, data: block[0] };
 }
 ```
@@ -196,20 +195,20 @@ agent: Explore
 mkdir -p .claude/agents
 ```
 
-### 학습 트래커 전문 에이전트 정의
+### Todo 앱 전문 에이전트 정의
 
-`.claude/agents/study-tracker-expert.md`:
+`.claude/agents/todo-app-expert.md`:
 
 ```yaml
 ---
-name: study-tracker-expert
+name: todo-app-expert
 description: Expert on the study tracker codebase. Use proactively when working on features.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
-You are an expert on the Study Tracker application.
-The app uses Next.js 15 App Router, Drizzle ORM, Clerk auth, and shadcn/ui.
+You are an expert on the Todo App application.
+The app uses Next.js 15 App Router, Drizzle ORM, and shadcn/ui.
 
 Key directories:
 - app/: Pages and layouts (App Router)
@@ -221,8 +220,8 @@ Key directories:
 Key patterns:
 - Server components for data fetching, client components for interactivity
 - All mutations go through server actions with zod validation
-- Authentication via Clerk's auth() function
-- Data always filtered by userId for multi-tenancy
+- Single-user app (no authentication needed)
+- Single-user app, no multi-tenancy filtering needed
 
 Always check existing patterns before suggesting changes.
 ```
@@ -231,7 +230,7 @@ Always check existing patterns before suggesting changes.
 
 | 필드 | 값 | 의미 |
 |------|-----|------|
-| `name` | `study-tracker-expert` | 에이전트 식별자 |
+| `name` | `todo-app-expert` | 에이전트 식별자 |
 | `description` | 설명 | Claude가 언제 위임할지 판단. "Use proactively"는 적극적 위임 유도 |
 | `tools` | `Read, Grep, Glob, Bash` | 이 에이전트가 사용할 수 있는 도구 |
 | `model` | `sonnet` | 사용할 모델. `sonnet`, `opus`, `haiku`, `inherit` 중 선택 |
@@ -276,9 +275,9 @@ claude agents
 ```yaml
 ---
 name: feature-plan
-description: 학습 트래커의 새로운 기능 계획
+description: Todo 앱의 새로운 기능 계획
 context: fork
-agent: study-tracker-expert
+agent: todo-app-expert
 ---
 
 다음의 구현을 계획해줘: $ARGUMENTS
@@ -331,7 +330,7 @@ API 엔드포인트를 구현해줘. 사전 로드된 스킬의 컨벤션을 따
 
 이 섹션을 완료하면 다음을 확인하세요:
 
-- [ ] 커스텀 에이전트 정의 파일 생성 확인 (`.claude/agents/study-tracker-expert.md`)
+- [ ] 커스텀 에이전트 정의 파일 생성 확인 (`.claude/agents/todo-app-expert.md`)
 - [ ] 자동 스킬 (api-conventions)이 서버 액션 작성 시 자동 호출되는지 확인
 - [ ] `context: fork` 스킬이 서브에이전트에서 격리 실행되는지 확인
 - [ ] `/agents` 명령으로 에이전트 목록 확인

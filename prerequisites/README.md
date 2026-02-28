@@ -3,7 +3,7 @@
 이 워크샵을 원활하게 진행하기 위해 아래 항목들을 미리 준비해 주세요.
 
 {% hint style="info" %}
-모든 외부 서비스 계정은 **무료 티어(Free Tier)**로 진행 가능합니다. 단, **AWS Bedrock 사용에는 토큰 기반 비용이 발생**할 수 있으므로 사전에 [비용 관리 팁](../appendix/README.md#비용-관리-팁)을 확인하시기 바랍니다.
+이 워크샵은 **사전 구성된 Amazon EC2 인스턴스**에서 진행됩니다. 필요한 개발 도구(Node.js, Git, AWS CLI, PostgreSQL 등)가 미리 설치되어 있으며, 브라우저 기반 **VS Code Server**를 통해 접속합니다. 단, **AWS Bedrock 사용에는 토큰 기반 비용이 발생**할 수 있으므로 사전에 [비용 관리 팁](../appendix/README.md#비용-관리-팁)을 확인하시기 바랍니다.
 {% endhint %}
 
 ---
@@ -45,29 +45,25 @@ Claude Code에서 Bedrock을 사용하려면 최소한 다음 IAM 권한이 필�
 
 ## 개발 환경
 
-### 필수 소프트웨어
+이 워크샵은 사전 구성된 Amazon EC2 인스턴스에서 진행됩니다. VS Code Server가 설치되어 있으며, 브라우저를 통해 접속합니다.
 
-| 소프트웨어 | 최소 버전 | 확인 명령어 |
-|-----------|----------|------------|
+### EC2 + VS Code Server (사전 구성)
+
+워크샵 환경에는 다음 소프트웨어가 미리 설치되어 있습니다:
+
+| 소프트웨어 | 설명 | 확인 명령어 |
+|-----------|------|------------|
 | **Node.js** | 18 이상 | `node --version` |
-| **npm** 또는 **pnpm** | npm 9+ / pnpm 8+ | `npm --version` 또는 `pnpm --version` |
-| **Git** | 2.x | `git --version` |
+| **npm** | 패키지 관리자 | `npm --version` |
+| **Git** | 버전 관리 | `git --version` |
+| **PostgreSQL** | 로컬 데이터베이스 | `psql --version` |
+| **AWS CLI v2** | AWS 서비스 접근 | `aws --version` |
 
-### 운영체제 및 터미널
+### 접속 방법
 
-Claude Code는 다음 환경에서 동작합니다:
-
-- **macOS** - Terminal 또는 iTerm2
-- **Linux** - 기본 터미널
-- **Windows** - WSL2 (Windows Subsystem for Linux) 필수
-
-{% hint style="danger" %}
-Windows의 cmd.exe 또는 PowerShell에서는 Claude Code가 직접 지원되지 않습니다. 반드시 **WSL2** 환경을 사용하세요.
-{% endhint %}
-
-### 설치 확인
-
-아래 명령어로 필수 소프트웨어가 올바르게 설치되어 있는지 확인하세요:
+1. 워크샵 진행자가 제공하는 **EC2 인스턴스 URL**을 브라우저에서 열기
+2. VS Code Server 인터페이스가 로드되면 **터미널(Terminal)**을 열기
+3. 터미널에서 아래 명령어로 환경이 정상적으로 구성되었는지 확인
 
 ```bash
 # Node.js 버전 확인 (18 이상)
@@ -79,10 +75,16 @@ npm --version
 # Git 버전 확인
 git --version
 
-# (선택) pnpm 설치 및 확인
-npm install -g pnpm
-pnpm --version
+# PostgreSQL 버전 확인
+psql --version
+
+# AWS CLI 버전 확인
+aws --version
 ```
+
+{% hint style="danger" %}
+EC2 인스턴스에 직접 소프트웨어를 설치하거나 시스템 설정을 변경하지 마세요. 필요한 모든 도구는 사전 설치되어 있습니다.
+{% endhint %}
 
 ---
 
@@ -95,27 +97,6 @@ pnpm --version
 - **URL**: [https://github.com](https://github.com)
 - **용도**: 소스 코드 저장소, GitHub Actions CI/CD
 - 이미 계정이 있다면 추가 설정 불필요
-
-### 2. Clerk 계정
-
-- **URL**: [https://clerk.com](https://clerk.com)
-- **용도**: 사용자 인증 (로그인/회원가입)
-- **무료 티어**: 월 10,000 MAU (Monthly Active Users) 포함
-- 가입 후 새 애플리케이션을 생성하고 API 키를 확인해 두세요
-
-### 3. Neon 데이터베이스 계정
-
-- **URL**: [https://neon.tech](https://neon.tech)
-- **용도**: PostgreSQL 데이터베이스 (서버리스)
-- **무료 티어**: 프로젝트 1개, 스토리지 0.5GB 포함
-- 가입 후 새 프로젝트를 생성하고 Connection String을 확인해 두세요
-
-### 4. Vercel 계정
-
-- **URL**: [https://vercel.com](https://vercel.com)
-- **용도**: Next.js 애플리케이션 배포
-- **무료 티어**: Hobby 플랜으로 개인 프로젝트 배포 가능
-- GitHub 계정으로 가입하면 저장소 연동이 편리합니다
 
 ---
 
@@ -153,38 +134,17 @@ pnpm --version
 
 ## 권장 사항
 
-필수는 아니지만 아래 도구를 설치하면 워크샵 경험이 더 원활해집니다.
+필수는 아니지만 아래 사항을 확인하면 워크샵 경험이 더 원활해집니다.
 
-### VS Code + Claude Code 확장
+### AWS CLI 자격증명 확인
 
-Claude Code는 터미널에서 독립적으로 사용할 수 있지만, **VS Code 확장**을 함께 사용하면 에디터 내에서 바로 Claude Code를 실행할 수 있어 편리합니다.
-
-```bash
-# VS Code 설치 후 확장 마켓플레이스에서 "Claude Code" 검색하여 설치
-# 또는 CLI로 설치
-code --install-extension anthropic.claude-code
-```
-
-### AWS CLI v2 설치
-
-AWS 자격증명 설정 및 Bedrock 연결 테스트에 AWS CLI가 필요합니다.
+EC2 인스턴스에 AWS CLI가 이미 설치되어 있습니다. 자격증명이 올바르게 설정되어 있는지 확인하세요:
 
 ```bash
-# macOS (Homebrew)
-brew install awscli
+# 자격증명 확인
+aws sts get-caller-identity
 
-# Linux
-curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-
-# 설치 확인
-aws --version
-```
-
-설치 후 자격증명을 설정합니다:
-
-```bash
+# 자격증명이 설정되지 않은 경우
 aws configure
 # AWS Access Key ID: [입력]
 # AWS Secret Access Key: [입력]
@@ -192,14 +152,14 @@ aws configure
 # Default output format: json
 ```
 
-### Claude Code 설치
+### Claude Code 설치 확인
 
 ```bash
-# npm으로 전역 설치
-npm install -g @anthropic-ai/claude-code
-
-# 설치 확인
+# Claude Code가 설치되어 있는지 확인
 claude --version
+
+# 설치되어 있지 않은 경우
+npm install -g @anthropic-ai/claude-code
 ```
 
 ---
@@ -209,13 +169,11 @@ claude --version
 워크샵 시작 전 아래 항목을 모두 확인하세요:
 
 - [ ] AWS 계정 준비 완료 (Bedrock 모델 액세스 활성화)
-- [ ] Node.js 18+ 설치 완료
-- [ ] Git 설치 완료
+- [ ] EC2 인스턴스 접속 확인 (VS Code Server)
+- [ ] Node.js 18+ 설치 확인
+- [ ] Git 설치 확인
+- [ ] PostgreSQL 설치 확인
 - [ ] GitHub 계정 생성 완료
-- [ ] Clerk 계정 생성 완료
-- [ ] Neon 데이터베이스 계정 생성 완료
-- [ ] Vercel 계정 생성 완료
-- [ ] (권장) AWS CLI v2 설치 완료
-- [ ] (권장) VS Code + Claude Code 확장 설치 완료
+- [ ] AWS CLI 자격증명 설정 완료
 
 모든 준비가 완료되면 [Chapter 1: 프로젝트 설정 & Claude Code 소개](../chapter-01/README.md)로 진행하세요.

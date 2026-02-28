@@ -16,22 +16,21 @@
 
 GitHub에서 새 Issue를 생성합니다:
 
-**제목**: 학습 세션 삭제 기능 추가
+**제목**: 할 일 삭제 기능 추가
 
-→ *이 프롬프트는 학습 세션 삭제 기능을 Claude에게 자동 구현 요청하기 위한 것입니다:*
+→ *이 프롬프트는 할 일 삭제 기능을 Claude에게 자동 구현 요청하기 위한 것입니다:*
 
 **본문**:
 ```markdown
 @claude
 
-학습 세션 삭제 기능을 구현해주세요.
+할 일 삭제 기능을 구현해주세요.
 
 ## 요구사항
-- 세션 목록 페이지에서 각 세션에 삭제 버튼 추가
+- 할 일 목록 페이지에서 각 항목에 삭제 버튼 추가
 - 삭제 전 확인 다이얼로그 표시 (shadcn/ui Dialog 사용)
 - Server action으로 삭제 구현
-  - session_subjects와 study_blocks도 cascade로 함께 삭제
-- 삭제 후 세션 목록 페이지로 리다이렉트
+- 삭제 후 할 일 목록 페이지로 리다이렉트
 - revalidatePath로 캐시 갱신
 
 ## 기술 규칙
@@ -48,8 +47,8 @@ Issue가 생성되면 GitHub Actions 워크플로가 트리거됩니다. Claude�
 2. **CLAUDE.md 읽기**: 프로젝트 규칙과 컨벤션을 파악합니다
 3. **코드베이스 분석**: 기존 패턴 (server actions, UI 컴포넌트 등)을 이해합니다
 4. **코드 구현**:
-   - `actions/sessions.ts`에 `deleteSession` server action 추가
-   - 세션 목록 UI에 삭제 버튼 추가
+   - `actions/todos.ts`에 `deleteTodo` server action 추가
+   - 할 일 목록 UI에 삭제 버튼 추가
    - 확인 다이얼로그 컴포넌트 생성
 5. **PR 생성**: 구현한 코드로 Pull Request를 생성합니다
 
@@ -74,7 +73,7 @@ Claude가 생성한 PR을 리뷰하고 추가 수정을 요청합니다.
 ```
 @claude 다음 사항을 수정해주세요:
 
-1. 삭제 확인 다이얼로그에 세션 날짜와 과목 정보도 표시해주세요
+1. 삭제 확인 다이얼로그에 할 일 제목과 카테고리 정보도 표시해주세요
 2. 삭제 버튼의 색상을 빨간색(destructive variant)으로 변경해주세요
 3. 삭제 중 로딩 상태를 표시해주세요
 ```
@@ -96,9 +95,9 @@ try-catch로 감싸고 사용자에게 toast 알림을 보여주세요.
 
 더 복잡한 기능을 요청해봅니다.
 
-### Issue 생성: 학습 통계 페이지
+### Issue 생성: 할 일 통계 대시보드
 
-**제목**: 학습 통계 대시보드 추가
+**제목**: 할 일 통계 대시보드 추가
 
 → *이 프롬프트는 통계 대시보드 페이지를 새로 생성 요청하기 위한 것입니다:*
 
@@ -106,15 +105,15 @@ try-catch로 감싸고 사용자에게 toast 알림을 보여주세요.
 ```markdown
 @claude
 
-학습 통계 대시보드 페이지를 만들어주세요.
+할 일 통계 대시보드 페이지를 만들어주세요.
 
 ## 요구사항
-- /dashboard/stats 경로에 통계 페이지 생성
+- /stats 경로에 통계 페이지 생성
 - 표시할 통계:
-  - 이번 주 총 학습 시간
-  - 과목별 학습 시간 비율 (색상 바 차트)
-  - 최근 7일간 일별 학습 시간
-  - 가장 많이 공부한 과목 TOP 3
+  - 완료/미완료 할 일 수
+  - 우선순위별 할 일 분포
+  - 카테고리별 할 일 수 (색상 바 차트)
+  - 최근 7일간 일별 완료된 할 일 수
 - 서버 컴포넌트로 데이터 패칭
 - lib/queries/stats.ts에 쿼리 함수 생성
 - shadcn/ui Card 컴포넌트로 각 통계 표시
@@ -151,7 +150,7 @@ GitHub Actions에서 Claude Code가 실행될 때도 **CLAUDE.md를 자동으로
 
 ## IMPORTANT
 - Always run pnpm build before creating a PR
-- Always check auth() for userId in server actions
+- Use Drizzle ORM for all database queries
 ```
 
 {% hint style="info" %}

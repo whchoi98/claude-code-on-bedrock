@@ -62,7 +62,7 @@ Claude Code가 프로젝트를 분석하고 CLAUDE.md 초안을 생성합니다.
 ```
 CLAUDE.md에 다음 프로젝트별 규칙을 추가해줘:
 
-# Study Tracker - CLAUDE.md
+# Todo App - CLAUDE.md
 
 ## 빌드 & 개발 명령어
 - 개발 서버: pnpm dev
@@ -72,7 +72,7 @@ CLAUDE.md에 다음 프로젝트별 규칙을 추가해줘:
 ## 코드 스타일
 - 서버 컴포넌트를 기본으로 사용, "use client"는 필요한 경우에만
 - 모든 데이터베이스 쿼리에 Drizzle ORM 사용
-- 서버 사이드 인증에 Clerk의 auth() 사용
+- 
 - UI에 shadcn/ui 컴포넌트 사용
 - 파일 이름: kebab-case, 컴포넌트: PascalCase
 
@@ -86,7 +86,7 @@ CLAUDE.md에 다음 프로젝트별 규칙을 추가해줘:
 ## 데이터 패칭 규칙
 - 데이터 패칭에 서버 컴포넌트 사용 (초기 데이터에 useEffect 사용 금지)
 - lib/queries/ 디렉토리에 쿼리 함수 생성
-- Clerk auth()의 userId로 항상 필터링
+- 
 
 ## 데이터 변이 규칙
 - 모든 데이터 변이에 Next.js Server Actions 사용
@@ -147,12 +147,12 @@ UI 컨벤션을 문서화하는 docs/ui.md 파일을 생성해줘:
 → *이 프롬프트는 문서를 먼저 읽게 한 뒤, 문서 규칙에 따라 대시보드를 생성하기 위한 것입니다:*
 
 ```
-먼저 CLAUDE.md와 docs/ui.md를 읽어줘. 그다음 우리 컨벤션에 따라 /dashboard에 대시보드 페이지를 만들어줘. 포함할 내용:
+먼저 CLAUDE.md와 docs/ui.md를 읽어줘. 그다음 우리 컨벤션에 따라 /todos에 대시보드 페이지를 만들어줘. 포함할 내용:
 - 네비게이션 링크가 있는 사이드바 레이아웃
 - 총 학습 시간, 세션 수, 과목 수를 보여주는 통계 카드
 - Table 컴포넌트를 사용한 최근 세션 목록
 - "새 세션" 버튼
-서버 컴포넌트에서 Drizzle ORM으로 데이터를 패칭하고, Clerk의 auth()로 인증해줘.
+서버 컴포넌트에서 Drizzle ORM으로 데이터를 패칭해줘.
 ```
 
 ### Step 5: 결과 비교
@@ -176,22 +176,21 @@ export default function Dashboard() {
 #### 문서와 함께 생성한 코드 (2.2)
 
 ```typescript
-// 서버 컴포넌트, Drizzle ORM, shadcn/ui, Clerk auth
-import { auth } from "@clerk/nextjs/server";
+// 서버 컴포넌트, Drizzle ORM, shadcn/ui
+
 import { db } from "@/db";
-import { studySessions } from "@/db/schema";
+import { todos } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  
+  
 
   const sessions = await db
     .select()
-    .from(studySessions)
-    .where(eq(studySessions.userId, userId))
-    .orderBy(desc(studySessions.date));
+    .from(todos)
+    .orderBy(desc(todos.date));
 
   return (
     <div className="flex">
@@ -217,7 +216,7 @@ export default async function DashboardPage() {
 {% hint style="success" %}
 **핵심 차이점:**
 - 서버 컴포넌트로 직접 데이터 패칭 (API 라우트 불필요)
-- Clerk `auth()`로 인증 처리
+
 - Drizzle ORM의 query builder 사용
 - shadcn/ui 컴포넌트 일관 사용
 - 사이드바 레이아웃 적용

@@ -10,6 +10,10 @@
 
 Claude Code는 기본적으로 Anthropic API를 사용하지만, Amazon Bedrock을 통해서도 사용할 수 있습니다. 이 워크샵에서는 **Amazon Bedrock**을 AI 제공자로 사용합니다. 이 섹션에서는 Bedrock에서 Claude 모델에 접근하기 위한 AWS 환경을 설정합니다.
 
+{% hint style="info" %}
+이 워크샵은 **사전 구성된 EC2 인스턴스**에서 진행됩니다. AWS 자격증명은 인스턴스 역할(Instance Role)로 이미 구성되어 있을 수 있습니다. 이 경우 3단계(AWS 자격증명 설정)를 건너뛸 수 있습니다.
+{% endhint %}
+
 ## 1단계: Amazon Bedrock 모델 액세스 활성화
 
 ### Bedrock 콘솔 접속
@@ -99,12 +103,16 @@ Claude Code가 Bedrock API를 호출하려면 적절한 IAM 권한이 필요합�
 4. `ClaudeCodeBedrockAccess`를 검색하여 연결합니다.
 
 {% hint style="info" %}
-비용 추적과 접근 제어를 간소화하기 위해 Claude Code 전용 AWS 계정을 생성하는 것을 권장합니다.
+EC2 인스턴스에서 실행하는 경우, 인스턴스에 연결된 IAM 역할(Instance Profile)에 이 정책을 연결하면 됩니다. 별도의 Access Key 설정이 필요 없습니다.
 {% endhint %}
 
 ## 3단계: AWS 자격증명 설정
 
 Claude Code는 AWS SDK의 기본 자격증명 체인을 사용합니다. 다음 옵션 중 하나를 선택하세요.
+
+{% hint style="info" %}
+EC2 인스턴스에 IAM 역할(Instance Role)이 이미 연결되어 있다면 이 단계를 건너뛸 수 있습니다. `aws sts get-caller-identity` 명령으로 자격증명이 유효한지 확인하세요.
+{% endhint %}
 
 ### Option A: AWS CLI 구성 (권장)
 

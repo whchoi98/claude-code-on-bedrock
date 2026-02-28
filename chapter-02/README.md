@@ -1,6 +1,6 @@
 # Chapter 2: Claude Code로 코드 생성
 
-> CLAUDE.md 문서, Thinking 모드, 서브에이전트 등 Claude Code의 핵심 기능을 활용하여 학습 트래커의 주요 기능을 구현합니다.
+> CLAUDE.md 문서, Thinking 모드, 서브에이전트 등 Claude Code의 핵심 기능을 활용하여 Todo 앱의 주요 기능을 구현합니다.
 
 ## 학습 목표
 
@@ -28,7 +28,7 @@
 
 | 섹션 | 주제 | 핵심 Claude Code 기능 |
 |------|------|----------------------|
-| [2.1](01-dashboard-first-attempt.md) | 대시보드 첫 시도 (문서 없이) | 컨텍스트의 중요성, `/rewind` |
+| [2.1](01-dashboard-first-attempt.md) | 할 일 목록 첫 시도 (문서 없이) | 컨텍스트의 중요성, `/rewind` |
 | [2.2](02-documentation-driven.md) | 문서 기반 코드 생성 | `/init`, CLAUDE.md, 가이드 문서 |
 | [2.3](03-data-fetching.md) | 서버 컴포넌트 데이터 패칭 | 문서 참조 패턴, 쿼리 함수 |
 | [2.4](04-thinking-mode.md) | Thinking 모드 & URL SearchParams | Extended Thinking, 복잡한 로직 |
@@ -39,13 +39,11 @@
 ## 이 챕터에서 구현하는 기능
 
 ```
-학습 트래커 앱
-├── /dashboard                  ← 대시보드 (통계 카드, 최근 세션)
-├── /dashboard/sessions         ← 학습 세션 목록 (필터링, 정렬)
-├── /dashboard/sessions/new     ← 새 학습 세션 생성
-├── /dashboard/sessions/[id]    ← 학습 세션 상세
-├── /dashboard/sessions/[id]/edit ← 학습 세션 편집
-└── /dashboard/subjects         ← 과목 관리 (CRUD)
+Todo 앱
+├── /todos                    ← 할 일 목록 (필터링, 정렬)
+├── /todos/new                ← 새 할 일 생성
+├── /todos/[id]/edit          ← 할 일 편집
+└── /categories               ← 카테고리 관리 (CRUD)
 ```
 
 ## 사전 준비
@@ -54,9 +52,8 @@ Chapter 1을 완료하여 다음이 준비되어 있어야 합니다:
 
 - [x] Claude Code가 Amazon Bedrock에 연결된 상태
 - [x] Next.js 15 프로젝트가 생성된 상태
-- [x] Clerk 인증이 설정된 상태
-- [x] Neon Postgres 데이터베이스가 연결된 상태
-- [x] Drizzle ORM 스키마가 정의된 상태 (`study_sessions`, `subjects`, `session_subjects`, `study_blocks`)
+- [x] 로컬 PostgreSQL 데이터베이스가 연결된 상태
+- [x] Drizzle ORM 스키마가 정의된 상태 (`todos`, `categories`)
 
 ## Next.js 개념 Quick Reference
 
@@ -67,18 +64,15 @@ Chapter 1을 완료하여 다음이 준비되어 있어야 합니다:
 | **Server Component** | 서버에서 실행되는 컴포넌트. 데이터베이스에 직접 접근 가능 | `export default async function Page() { ... }` |
 | **Client Component** | 브라우저에서 실행되는 컴포넌트. 사용자 상호작용 처리 | `"use client"` 선언 필요 |
 | **Server Action** | 서버에서 실행되는 함수. 폼 제출 등 데이터 변경에 사용 | `"use server"` 선언 필요 |
-| **`auth()`** | Clerk에서 제공하는 함수. 현재 로그인한 사용자 ID를 반환 | `const { userId } = await auth()` |
-| **Drizzle ORM** | TypeScript로 SQL 쿼리를 작성하는 라이브러리 | `db.select().from(table).where(...)` |
+| **Drizzle ORM** | TypeScript로 SQL 쿼리를 작성하는 라이브러리 | `db.select().from(todos).where(...)` |
 | **`searchParams`** | URL의 쿼리 파라미터를 서버 컴포넌트에서 읽는 방법 | `?sort=newest` → `searchParams.sort` |
-| **`revalidatePath()`** | 데이터 변경 후 페이지를 새로고침하는 함수 | 세션 생성 후 목록 페이지 갱신 |
+| **`revalidatePath()`** | 데이터 변경 후 페이지를 새로고침하는 함수 | 할 일 생성 후 목록 페이지 갱신 |
 
 ## DB 스키마 참고
 
 ```
-study_sessions: id, userId, date, startTime, endTime, notes, createdAt, updatedAt
-subjects: id, userId, name, color, createdAt
-session_subjects: id, sessionId, subjectId
-study_blocks: id, sessionSubjectId, durationMinutes, pagesRead, notes, createdAt
+todos: id (UUID PK), title (TEXT NOT NULL), description (TEXT), completed (BOOLEAN DEFAULT false), priority (TEXT 'low'|'medium'|'high' DEFAULT 'medium'), dueDate (DATE), categoryId (UUID FK → categories.id), createdAt (TIMESTAMP), updatedAt (TIMESTAMP)
+categories: id (UUID PK), name (TEXT NOT NULL), color (TEXT NOT NULL), createdAt (TIMESTAMP)
 ```
 
 ## 소요 시간
@@ -87,4 +81,4 @@ study_blocks: id, sessionSubjectId, durationMinutes, pagesRead, notes, createdAt
 
 ---
 
-> **다음 단계**: [2.1 대시보드 첫 시도](01-dashboard-first-attempt.md)에서 문서 없이 코드를 생성해보고, 왜 컨텍스트가 중요한지 직접 체험합니다.
+> **다음 단계**: [2.1 할 일 목록 첫 시도](01-dashboard-first-attempt.md)에서 문서 없이 코드를 생성해보고, 왜 컨텍스트가 중요한지 직접 체험합니다.

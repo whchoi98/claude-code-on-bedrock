@@ -12,11 +12,9 @@
 
 ## 1단계: Claude Code 설치
 
-운영체제에 맞는 방법을 선택하세요.
+EC2 인스턴스의 터미널에서 다음 명령어를 실행합니다.
 
 ### Native Install (권장)
-
-macOS 및 Linux (WSL 포함)에서 다음 명령어를 실행합니다:
 
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash
@@ -24,16 +22,6 @@ curl -fsSL https://claude.ai/install.sh | bash
 
 {% hint style="info" %}
 Native Install은 백그라운드에서 자동 업데이트가 지원됩니다. 항상 최신 버전을 유지할 수 있어 권장되는 설치 방법입니다.
-{% endhint %}
-
-### Homebrew (macOS)
-
-```bash
-brew install --cask claude-code
-```
-
-{% hint style="warning" %}
-Homebrew로 설치한 경우 자동 업데이트가 지원되지 않습니다. `brew upgrade claude-code` 명령으로 수동 업데이트가 필요합니다.
 {% endhint %}
 
 ### 설치 확인
@@ -118,11 +106,7 @@ export DISABLE_PROMPT_CACHING=1
 
 ## 5단계: 환경변수 영구 설정
 
-매번 환경변수를 설정하지 않도록 shell 프로필에 추가합니다.
-
-{% hint style="tip" %}
-어떤 셸을 사용하는지 모르겠다면 터미널에서 `echo $SHELL`을 실행해 보세요. `/bin/bash`면 Bash, `/bin/zsh`면 Zsh입니다.
-{% endhint %}
+매번 환경변수를 설정하지 않도록 shell 프로필에 추가합니다. EC2 환경에서는 기본 셸이 Bash입니다.
 
 ### Bash 사용자 (~/.bashrc)
 
@@ -137,21 +121,6 @@ export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:
 EOF
 
 source ~/.bashrc
-```
-
-### Zsh 사용자 (~/.zshrc)
-
-```bash
-cat << 'EOF' >> ~/.zshrc
-
-# Claude Code - Amazon Bedrock 설정
-export CLAUDE_CODE_USE_BEDROCK=1
-export AWS_REGION=us-east-1
-export ANTHROPIC_DEFAULT_SONNET_MODEL='us.anthropic.claude-sonnet-4-6'
-export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:0'
-EOF
-
-source ~/.zshrc
 ```
 
 ## 6단계: 연결 확인

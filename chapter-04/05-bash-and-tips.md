@@ -264,8 +264,8 @@ CLAUDE.md에 너무 많은 내용을 넣으면 매 요청마다 컨텍스트를 
 
 | 비효과적 | 효과적 |
 |---------|--------|
-| "이거 고쳐줘" | "app/dashboard/page.tsx의 date picker가 모바일에서 오버플로됩니다. max-width: 100%를 추가해주세요" |
-| "테스트 작성해줘" | "actions/study-blocks.ts의 createStudyBlock 함수에 대한 단위 테스트를 작성해줘. 인증 실패, 유효성 검증 실패, 정상 생성 케이스를 포함해줘" |
+| "이거 고쳐줘" | "app/todos/page.tsx의 date picker가 모바일에서 오버플로됩니다. max-width: 100%를 추가해주세요" |
+| "테스트 작성해줘" | "actions/study-blocks.ts의 createTodo 함수에 대한 단위 테스트를 작성해줘. 인증 실패, 유효성 검증 실패, 정상 생성 케이스를 포함해줘" |
 
 ### 5. 검증 기준을 함께 제공하세요
 
@@ -314,14 +314,14 @@ Bedrock에서 사용 가능한 모델 ID는 AWS 콘솔의 Bedrock 모델 액세�
 |---------|-----------|
 | Chapter 1 | 프로젝트 설정, Bedrock 연결, CLAUDE.md, 컨텍스트 창 개념 |
 | Chapter 2 | 문서 기반 코드 생성, Thinking 모드, 서버 액션, 슬래시 명령, 서브에이전트 |
-| Chapter 3 | Vercel 배포, GitHub Actions + Claude Code, Issue 기반 자동 개발 |
+| Chapter 3 | GitHub 저장소 설정, GitHub Actions + Claude Code, Issue 기반 자동 개발 |
 | Chapter 4 | UI 개선, 스킬, 커스텀 에이전트, Hooks, CLI 파이프, 생산성 팁 |
 
 ### 다음 단계
 
 - [Claude Code 공식 문서](https://code.claude.com/docs)에서 더 많은 기능 탐색
 - [부록: 참고 자료 & 문제 해결](../appendix/README.md)에서 추가 리소스 확인
-- 학습 트래커에 새로운 기능을 추가하며 실습 계속
+- Todo 앱에 새로운 기능을 추가하며 실습 계속
 
 ---
 

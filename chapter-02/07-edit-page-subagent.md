@@ -87,8 +87,8 @@ Claude Code가 Explore 서브에이전트를 생성하여 코드베이스를 분
 Subagent findings:
 
 1. Data Fetching Pattern:
-   - Server components use auth() then call query functions from lib/queries/
-   - Query functions accept userId and return typed results
+   - Server components call query functions directly from lib/queries/
+   - Query functions return typed results from Drizzle ORM
 
 2. Form Pattern:
    - Client components with "use client"
@@ -150,7 +150,7 @@ Subagent findings:
 
 3. actions/sessions.ts에 updateSession server action 생성:
    - Zod로 유효성 검사
-   - 소유권 확인 (userId)
+   - Zod로 유효성 검사
    - 세션 필드 업데이트
    - 과목과 학습 블록 변경 처리 (추가/제거)
    - 업데이트 후 revalidatePath
@@ -193,13 +193,13 @@ interface Props {
 }
 
 export default async function EditSessionPage({ params }: Props) {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  
+  
 
   const { id } = await params;
   const [session, subjects] = await Promise.all([
-    getSessionWithDetails(id, userId),
-    getSubjectsByUserId(userId),
+    getTodoWithCategory(id),
+    getCategories(),
   ]);
 
   if (!session) notFound();

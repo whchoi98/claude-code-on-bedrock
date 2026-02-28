@@ -50,7 +50,7 @@ Bedrock 사용 시에는 수동 설정이 필요합니다. 먼저 커스텀 GitH
 
 1. [https://github.com/settings/apps/new](https://github.com/settings/apps/new)에 접속합니다.
 2. 기본 정보를 입력합니다:
-   - **GitHub App name**: `StudyTracker Claude` (고유한 이름)
+   - **GitHub App name**: `TodoApp Claude` (고유한 이름)
    - **Homepage URL**: 리포지토리 URL
 3. **Webhooks**: "Active" 체크 해제 (필요 없음)
 4. **Repository permissions** 설정:
@@ -69,7 +69,7 @@ Bedrock 사용 시에는 수동 설정이 필요합니다. 먼저 커스텀 GitH
 
 1. 앱 설정 페이지에서 좌측 **Install App** 클릭
 2. 본인의 계정/조직 선택
-3. **Only select repositories** 선택 후 study-tracker 리포지토리 선택
+3. **Only select repositories** 선택 후 todo-app 리포지토리 선택
 4. **Install** 클릭
 
 ## 2단계: AWS OIDC Identity Provider 설정
@@ -135,7 +135,7 @@ AWS 콘솔에서 **IAM > Identity providers > Add provider**로 이동합니다:
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:YOUR_GITHUB_USERNAME/study-tracker:*"
+          "token.actions.githubusercontent.com:sub": "repo:YOUR_GITHUB_USERNAME/todo-app:*"
         }
       }
     }
@@ -144,7 +144,7 @@ AWS 콘솔에서 **IAM > Identity providers > Add provider**로 이동합니다:
 ```
 
 {% hint style="warning" %}
-`YOUR_ACCOUNT_ID`와 `YOUR_GITHUB_USERNAME/study-tracker`를 실제 값으로 교체하세요.
+`YOUR_ACCOUNT_ID`와 `YOUR_GITHUB_USERNAME/todo-app`를 실제 값으로 교체하세요.
 {% endhint %}
 
 ## 3단계: GitHub Secrets 설정
