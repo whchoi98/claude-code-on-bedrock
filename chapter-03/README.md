@@ -64,6 +64,10 @@ Claude Code Action (Amazon Bedrock)
 - **Amazon Bedrock**: AWS 관리형 서비스로 Claude 모델 호출. OIDC를 통한 안전한 인증
 - **CLAUDE.md**: 프로젝트 규칙과 코딩 컨벤션을 정의. GitHub Actions에서도 자동으로 읽어 적용
 
+### 다음 챕터 미리보기
+
+Chapter 3를 완료하면, [Chapter 4: 고급 기능](../chapter-04/README.md)에서 이미지 기반 UI 피드백, 사용자 범위 Skills, 커스텀 에이전트, Hooks, CLI 파이프 등 Claude Code의 고급 기능을 학습합니다.
+
 ## 예상 소요 시간
 
 약 45~60분
