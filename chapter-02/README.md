@@ -75,6 +75,10 @@ todos: id (UUID PK), title (TEXT NOT NULL), description (TEXT), completed (BOOLE
 categories: id (UUID PK), name (TEXT NOT NULL), color (TEXT NOT NULL), createdAt (TIMESTAMP)
 ```
 
+### 다음 챕터 미리보기
+
+Chapter 2를 완료하면, [Chapter 3: GitHub 저장소 설정 및 GitHub Actions 자동화](../chapter-03/README.md)에서 GitHub 저장소를 설정하고 GitHub Actions와 Claude Code를 연동하여 Issue 기반 자동 개발 워크플로를 구축합니다.
+
 ## 소요 시간
 
 약 90~120분
