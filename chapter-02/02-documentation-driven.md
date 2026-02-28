@@ -64,35 +64,35 @@ CLAUDE.md에 다음 프로젝트별 규칙을 추가해줘:
 
 # Study Tracker - CLAUDE.md
 
-## Build & Dev Commands
-- Dev: pnpm dev
-- Build: pnpm build
-- Lint: pnpm lint
+## 빌드 & 개발 명령어
+- 개발 서버: pnpm dev
+- 빌드: pnpm build
+- 린트: pnpm lint
 
-## Code Style
-- Use server components by default, "use client" only when needed
-- Use Drizzle ORM for all database queries
-- Use Clerk's auth() for server-side authentication
-- Use shadcn/ui components for UI
-- File naming: kebab-case for files, PascalCase for components
+## 코드 스타일
+- 서버 컴포넌트를 기본으로 사용, "use client"는 필요한 경우에만
+- 모든 데이터베이스 쿼리에 Drizzle ORM 사용
+- 서버 사이드 인증에 Clerk의 auth() 사용
+- UI에 shadcn/ui 컴포넌트 사용
+- 파일 이름: kebab-case, 컴포넌트: PascalCase
 
-## Project Structure
-- app/: Next.js App Router pages
-- components/: Reusable UI components
-- db/: Database schema and connection
-- lib/: Utility functions and query functions
-- actions/: Server actions
+## 프로젝트 구조
+- app/: Next.js App Router 페이지
+- components/: 재사용 가능한 UI 컴포넌트
+- db/: 데이터베이스 스키마 및 연결
+- lib/: 유틸리티 함수 및 쿼리 함수
+- actions/: Server Actions
 
-## Data Fetching Rules
-- Use server components for data fetching (no useEffect for initial data)
-- Create query functions in lib/queries/ directory
-- Always filter by userId from Clerk auth()
+## 데이터 패칭 규칙
+- 데이터 패칭에 서버 컴포넌트 사용 (초기 데이터에 useEffect 사용 금지)
+- lib/queries/ 디렉토리에 쿼리 함수 생성
+- Clerk auth()의 userId로 항상 필터링
 
-## Mutation Rules
-- Use Next.js Server Actions for all mutations
-- Place server actions in actions/ directory
-- Always validate input with zod
-- Use revalidatePath() after mutations
+## 데이터 변이 규칙
+- 모든 데이터 변이에 Next.js Server Actions 사용
+- Server Actions는 actions/ 디렉토리에 배치
+- 입력값은 항상 Zod로 유효성 검사
+- 변이 후 revalidatePath() 호출
 ```
 
 {% hint style="tip" %}
@@ -108,36 +108,36 @@ CLAUDE.md는 구체적일수록 좋습니다. "코드를 잘 작성하세요"보
 ```
 UI 컨벤션을 문서화하는 docs/ui.md 파일을 생성해줘:
 
-# UI Conventions
+# UI 컨벤션
 
-## Component Library
-- Use shadcn/ui as the primary component library
-- Import components from @/components/ui/
+## 컴포넌트 라이브러리
+- shadcn/ui를 기본 컴포넌트 라이브러리로 사용
+- @/components/ui/에서 컴포넌트 임포트
 
-## Layout
-- Use a sidebar navigation layout for the dashboard
-- Main content area with max-width container
-- Responsive design with mobile-first approach
+## 레이아웃
+- 대시보드에 사이드바 네비게이션 레이아웃 사용
+- 메인 콘텐츠 영역에 max-width 컨테이너 적용
+- 모바일 우선 반응형 디자인
 
-## Data Display
-- Use shadcn/ui Card component for statistics and summary data
-- Use shadcn/ui Table component for list views
-- Use shadcn/ui Badge for status indicators and subject tags
+## 데이터 표시
+- 통계 및 요약 데이터에 shadcn/ui Card 컴포넌트 사용
+- 목록 뷰에 shadcn/ui Table 컴포넌트 사용
+- 상태 표시와 과목 태그에 shadcn/ui Badge 사용
 
-## Color Scheme
-- Primary color: blue (default shadcn theme)
-- Use subject's own color property for subject badges
-- Use muted variants for secondary information
+## 색상 체계
+- 기본 색상: blue (shadcn 기본 테마)
+- 과목 badge에는 과목 자체의 color 속성 사용
+- 보조 정보에는 muted 변형 사용
 
-## Forms
-- Use shadcn/ui form components (Input, Select, Textarea)
-- Use shadcn/ui Calendar for date picking
-- Use shadcn/ui Dialog for modal forms
-- Show validation errors inline below each field
+## 폼
+- shadcn/ui 폼 컴포넌트 사용 (Input, Select, Textarea)
+- 날짜 선택에 shadcn/ui Calendar 사용
+- 모달 폼에 shadcn/ui Dialog 사용
+- 유효성 검사 에러는 각 필드 아래 인라인으로 표시
 
-## Icons
-- Use lucide-react for all icons
-- Keep icon usage consistent across similar actions
+## 아이콘
+- 모든 아이콘에 lucide-react 사용
+- 유사한 동작에 일관된 아이콘 사용
 ```
 
 ### Step 4: 문서를 참조한 대시보드 재생성

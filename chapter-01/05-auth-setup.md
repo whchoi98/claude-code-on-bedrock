@@ -218,7 +218,7 @@ export default function Component() {
 ```
 CLAUDE.md에 다음 인증 관련 정보를 추가해줘:
 
-## Authentication
+## 인증
 - Clerk (@clerk/nextjs)를 사용한 인증
 - middleware가 /sign-in과 /sign-up을 제외한 모든 라우트를 보호
 - Server Components에서 userId를 가져오려면 @clerk/nextjs/server의 `auth()` 사용

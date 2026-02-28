@@ -256,17 +256,17 @@ components/ui/
 ```
 CLAUDE.md에 다음 섹션을 추가해줘:
 
-## Database
-- Neon Postgres with Drizzle ORM
-- Connection: db/index.ts (neon-http driver)
-- Schema: db/schema.ts
-- Config: drizzle.config.ts
-- Commands: pnpm db:generate, pnpm db:migrate, pnpm db:studio
+## 데이터베이스
+- Neon Postgres + Drizzle ORM
+- 연결: db/index.ts (neon-http 드라이버)
+- 스키마: db/schema.ts
+- 설정: drizzle.config.ts
+- 명령어: pnpm db:generate, pnpm db:migrate, pnpm db:studio
 
 ## UI
-- shadcn/ui with Tailwind CSS
-- Components in components/ui/
-- Available: button, card, input, label, select, table, dialog, popover, calendar
+- shadcn/ui + Tailwind CSS
+- 컴포넌트 위치: components/ui/
+- 사용 가능: button, card, input, label, select, table, dialog, popover, calendar
 ```
 
 ## 7단계: 연결 테스트

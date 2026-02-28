@@ -36,21 +36,21 @@ export default async function Page() {
 ```
 데이터 패칭 패턴을 문서화하는 docs/data-fetching.md를 생성해줘:
 
-# Data Fetching Patterns
+# 데이터 패칭 패턴
 
-## Core Principles
-- Use server components for data fetching (no useEffect/useState for initial data)
-- Never create API routes for data that server components can fetch directly
-- Always authenticate with Clerk's auth() before querying
+## 핵심 원칙
+- 데이터 패칭에 서버 컴포넌트 사용 (초기 데이터에 useEffect/useState 사용 금지)
+- 서버 컴포넌트에서 직접 패칭 가능한 데이터에 API 라우트를 만들지 않음
+- 쿼리 전에 항상 Clerk의 auth()로 인증
 
-## Query Functions
-- Create reusable query functions in lib/queries/ directory
-- Each domain entity gets its own file (e.g., lib/queries/sessions.ts, lib/queries/subjects.ts)
-- All query functions must accept userId as a parameter
-- Use Drizzle ORM's query builder with proper relations
-- Return typed results
+## 쿼리 함수
+- lib/queries/ 디렉토리에 재사용 가능한 쿼리 함수 생성
+- 도메인 엔티티별로 별도 파일 생성 (예: lib/queries/sessions.ts, lib/queries/subjects.ts)
+- 모든 쿼리 함수는 userId를 매개변수로 받아야 함
+- Drizzle ORM의 query builder와 relations 사용
+- 타입이 지정된 결과 반환
 
-## Example Query Function Pattern
+## 쿼리 함수 패턴 예시
 ```typescript
 // lib/queries/sessions.ts
 import { db } from "@/db";
@@ -66,15 +66,15 @@ export async function getSessionsByUserId(userId: string) {
 }
 ```
 
-## Loading States
-- Use React Suspense boundaries for loading states
-- Create loading.tsx in each route for automatic loading UI
-- Use shadcn/ui Skeleton component for loading placeholders
+## 로딩 상태
+- 로딩 상태에 React Suspense 경계 사용
+- 각 라우트에 loading.tsx 생성하여 자동 로딩 UI 제공
+- 로딩 플레이스홀더에 shadcn/ui Skeleton 컴포넌트 사용
 
-## Error Handling
-- Create error.tsx in each route for error boundaries
-- Log errors server-side, show user-friendly messages client-side
-- Handle "not found" cases with notFound() from next/navigation
+## 에러 처리
+- 각 라우트에 error.tsx 생성하여 에러 경계 설정
+- 서버 사이드에서 에러 로깅, 클라이언트에는 사용자 친화적 메시지 표시
+- "찾을 수 없음" 케이스는 next/navigation의 notFound()로 처리
 ```
 
 ### Step 2: 학습 세션 목록 페이지 구현

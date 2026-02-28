@@ -96,15 +96,15 @@ study-tracker/
 ```markdown
 # Study Tracker
 
-## Project
-- Next.js 15 App Router with TypeScript
-- Package manager: pnpm
-- Styling: Tailwind CSS
+## 프로젝트
+- Next.js 15 App Router, TypeScript
+- 패키지 매니저: pnpm
+- 스타일링: Tailwind CSS
 
-## Commands
-- Dev server: pnpm dev
-- Build: pnpm build
-- Lint: pnpm lint
+## 명령어
+- 개발 서버: pnpm dev
+- 빌드: pnpm build
+- 린트: pnpm lint
 ```
 
 {% hint style="info" %}

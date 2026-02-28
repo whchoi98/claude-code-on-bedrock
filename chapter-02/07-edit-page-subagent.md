@@ -274,19 +274,19 @@ Code Review Findings:
 ### 탐색/조사는 서브에이전트로
 
 ```
-Use a subagent to find all places where we handle authentication in this project.
+서브에이전트를 사용해서 이 프로젝트에서 인증을 처리하는 모든 곳을 찾아줘.
 ```
 
 ### 큰 출력이 예상되는 작업에 적합
 
 ```
-Use a subagent to run the test suite and summarize only the failures.
+서브에이전트를 사용해서 테스트 스위트를 실행하고 실패한 것만 요약해줘.
 ```
 
 ### 병렬 탐색
 
 ```
-Use subagents in parallel to research the authentication module, the database layer, and the API routes.
+서브에이전트를 병렬로 사용해서 인증 모듈, 데이터베이스 레이어, API 라우트를 각각 조사해줘.
 ```
 
 ### 커스텀 서브에이전트 만들기

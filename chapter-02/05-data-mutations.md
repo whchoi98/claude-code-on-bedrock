@@ -42,27 +42,27 @@ export async function createItem(formData: FormData) {
 ```
 데이터 변이 패턴을 문서화하는 docs/data-mutations.md를 생성해줘:
 
-# Data Mutation Patterns
+# 데이터 변이 패턴
 
-## Core Principles
-- Use Next.js Server Actions for ALL data mutations
-- Never use API routes for mutations
-- Always authenticate before mutating data
-- Always validate input on the server
+## 핵심 원칙
+- 모든 데이터 변이에 Next.js Server Actions 사용
+- 데이터 변이에 API 라우트 사용 금지
+- 데이터 변이 전 항상 인증 확인
+- 서버에서 항상 입력값 유효성 검사
 
-## Server Action Structure
-- Place server actions in the actions/ directory
-- One file per domain entity (e.g., actions/sessions.ts, actions/subjects.ts)
-- Each action file starts with "use server" directive
-- Every action must check userId from Clerk's auth()
+## Server Action 구조
+- Server Actions는 actions/ 디렉토리에 배치
+- 도메인 엔티티별로 하나의 파일 (예: actions/sessions.ts, actions/subjects.ts)
+- 각 액션 파일은 "use server" 지시어로 시작
+- 모든 액션은 Clerk의 auth()에서 userId를 확인해야 함
 
-## Input Validation
-- Use Zod schemas for all input validation
-- Define schemas alongside the action functions
-- Return validation errors in a structured format
+## 입력 유효성 검사
+- 모든 입력 유효성 검사에 Zod 스키마 사용
+- 액션 함수와 함께 스키마 정의
+- 구조화된 형식으로 유효성 검사 에러 반환
 
-## Return Type
-All server actions return a consistent type:
+## 반환 타입
+모든 Server Action은 일관된 타입을 반환:
 ```typescript
 type ActionResult = {
   success: boolean;
@@ -71,16 +71,16 @@ type ActionResult = {
 };
 ```
 
-## After Mutation
-- Call revalidatePath() to refresh affected pages
-- For creation: redirect to the new item's page or list page
-- For deletion: redirect to the list page
+## 변이 후 처리
+- revalidatePath()를 호출하여 영향받는 페이지 새로고침
+- 생성 시: 새 항목의 페이지 또는 목록 페이지로 redirect
+- 삭제 시: 목록 페이지로 redirect
 
-## Form Handling on Client
-- Use React's useActionState hook for form state management
-- Show loading state while action is pending
-- Display validation errors from the server
-- Use shadcn/ui form components
+## 클라이언트 폼 처리
+- React의 useActionState 훅으로 폼 상태 관리
+- 액션 처리 중 로딩 상태 표시
+- 서버에서 반환된 유효성 검사 에러 표시
+- shadcn/ui 폼 컴포넌트 사용
 ```
 
 ### Step 2: 학습 세션 생성 폼 구현
