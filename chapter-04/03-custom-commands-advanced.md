@@ -2,6 +2,10 @@
 
 > 프로젝트 범위를 넘어 모든 프로젝트에서 재사용할 수 있는 사용자 범위 스킬을 만듭니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: 사용자 범위 Skills (~/.claude/skills/)
+
+> ⭐⭐ **난이도**: 보통
+
 ## 스킬(Skills) 개요
 
 Claude Code의 **스킬(Skills)**은 `SKILL.md` 파일로 정의되는 확장 기능입니다. Claude의 동작을 커스터마이즈하고, 반복 작업을 자동화할 수 있습니다. 스킬은 슬래시 명령(`/skill-name`)으로 직접 호출하거나, Claude가 상황에 맞게 자동으로 사용합니다.
@@ -75,6 +79,8 @@ allowed-tools: Read, Grep, Glob, Bash
 
 Claude Code에서 다음과 같이 호출합니다:
 
+→ *이 프롬프트는 생성한 코드 리뷰 스킬을 실행하기 위한 것입니다:*
+
 ```
 /review
 ```
@@ -115,6 +121,8 @@ disable-model-invocation: true
 
 `$ARGUMENTS`는 슬래시 명령 호출 시 전달된 인자로 대체됩니다. 예를 들어:
 
+→ *이 프롬프트는 디버그 스킬에 에러 메시지를 인자로 전달하기 위한 것입니다:*
+
 ```
 /debug TypeError: Cannot read property 'map' of undefined in dashboard page
 ```
@@ -153,6 +161,8 @@ disable-model-invocation: true
 
 ### 코드 리뷰 스킬 테스트
 
+→ *이 프롬프트는 코드 변경사항에 대해 리뷰 스킬을 실행하기 위한 것입니다:*
+
 ```bash
 # 먼저 코드 변경을 만들어봅니다
 # (이전 섹션에서 UI 개선 작업을 했다면 변경사항이 있을 것입니다)
@@ -162,6 +172,8 @@ disable-model-invocation: true
 ```
 
 ### 디버그 스킬 테스트
+
+→ *이 프롬프트는 특정 버그를 디버그 스킬에 전달하여 원인 분석을 요청하기 위한 것입니다:*
 
 ```
 /debug 학습 블록을 삭제할 때 합계가 업데이트되지 않아
@@ -245,6 +257,17 @@ agent: Explore
 - **$ARGUMENTS**: 슬래시 명령 호출 시 인자 전달
 - **context: fork**: 서브에이전트에서 격리 실행
 - **지원 파일**: 스킬 디렉토리에 체크리스트, 템플릿 등 추가 가능
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] `~/.claude/skills/` 디렉토리에 스킬 파일 생성 확인
+- [ ] `/review` 스킬이 정상적으로 동작하는지 확인
+- [ ] `/debug` 스킬에 인자 전달이 올바르게 되는지 확인
+- [ ] 프론트매터 설정 (name, description, disable-model-invocation 등) 이해
 
 ---
 

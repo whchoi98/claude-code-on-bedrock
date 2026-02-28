@@ -143,8 +143,10 @@ pnpm --version
 - 환경 변수 설정 (`export`)
 - Git 기본 명령어 (`git add`, `git commit`, `git push`)
 
-{% hint style="info" %}
-TypeScript나 React에 익숙하지 않더라도 Claude Code가 코드 생성을 도와주므로 워크샵을 따라갈 수 있습니다. 다만, 생성된 코드를 이해하는 데 기본 지식이 있으면 더 효과적입니다.
+{% hint style="success" %}
+**걱정하지 마세요!** TypeScript나 React에 익숙하지 않더라도 이 워크샵을 충분히 따라갈 수 있습니다. Claude Code가 코드 생성을 도와주기 때문에, 여러분은 **"무엇을 만들고 싶은지"**를 설명하는 것에 집중하면 됩니다.
+
+워크샵을 진행하면서 자연스럽게 코드 패턴이 눈에 들어올 것입니다. 완벽히 이해하지 못하더라도 괜찮습니다 — 실습을 통해 점진적으로 익숙해집니다.
 {% endhint %}
 
 ---

@@ -33,6 +33,28 @@ session_subjects: id, sessionId, subjectId
 study_blocks: id, sessionSubjectId, durationMinutes, pagesRead, notes, createdAt
 ```
 
+### 여기까지 배운 Claude Code 기능 (Chapter 1~3 복습)
+
+| 기능 | 배운 챕터 |
+|------|----------|
+| 기본 명령어 (`/clear`, `/compact`, `/rewind`) | Chapter 1 |
+| Plan 모드 (`Shift+Tab`) | Chapter 1 |
+| `/init`, CLAUDE.md | Chapter 2 |
+| Extended Thinking | Chapter 2 |
+| Skills (커스텀 슬래시 명령) | Chapter 2 |
+| 서브에이전트 | Chapter 2 |
+| GitHub Actions 연동 | Chapter 3 |
+
+### 이 챕터에서 새로 배울 기능
+
+| 기능 | 배우는 섹션 | 설명 |
+|------|-----------|------|
+| 이미지 기반 피드백 | 4.1 | 스크린샷을 붙여넣어 UI 수정 요청 |
+| 사용자 범위 Skills | 4.3 | `~/.claude/skills/`에 전역 스킬 생성 |
+| 에이전트 정의 | 4.4 | `.claude/agents/`에 커스텀 에이전트 생성 |
+| Hooks | 4.5 | 도구 실행 전후에 자동 스크립트 실행 |
+| CLI 파이프 (`claude -p`) | 4.5 | 다른 도구의 출력을 Claude에 전달 |
+
 ### 핵심 개념 미리보기
 
 이 챕터에서 배우게 될 Claude Code 고급 기능들입니다.

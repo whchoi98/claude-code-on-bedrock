@@ -24,7 +24,22 @@
 | 3-2 | [GitHub Actions + Claude Code 설정](02-github-actions-setup.md) | GitHub App 생성, AWS OIDC 설정, IAM Role 구성, 워크플로 파일 작성 |
 | 3-3 | [Issue 기반 자동 개발](03-issue-based-development.md) | Issue로 기능 요청, Claude 자동 구현, PR 리뷰 및 수정 요청 |
 
+### 이 챕터에서 배우는 Claude Code 기능
+
+| 기능 | 배우는 섹션 | 설명 |
+|------|-----------|------|
+| Git 커밋/푸시 | 3.1 | Claude Code로 Git 명령 실행 |
+| GitHub Actions 연동 | 3.2 | @claude로 자동 코드 생성 |
+| Issue 기반 개발 | 3.3 | Issue에서 자동으로 PR 생성 |
+
 ## 아키텍처 개요
+
+```
+GitHub Issue → GitHub Actions → AWS 인증 → Claude Code (Bedrock) → PR 생성 → Vercel 배포
+```
+
+<details>
+<summary>상세 아키텍처 보기</summary>
 
 ```
 GitHub Issue/PR 코멘트 (@claude)
@@ -44,6 +59,8 @@ Claude Code Action (Amazon Bedrock)
         v
 Vercel 자동 배포 (main 브랜치 merge 시)
 ```
+
+</details>
 
 ## 핵심 기술
 

@@ -2,6 +2,10 @@
 
 > Amazon Bedrock에서 Claude 모델을 사용하기 위한 AWS 환경을 구성합니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: AWS 환경 설정 (Claude Code 기능 없음 - 준비 단계)
+
+> ⭐ **난이도**: 쉬움
+
 ## 개요
 
 Claude Code는 기본적으로 Anthropic API를 사용하지만, Amazon Bedrock을 통해서도 사용할 수 있습니다. 이 워크샵에서는 **Amazon Bedrock**을 AI 제공자로 사용합니다. 이 섹션에서는 Bedrock에서 Claude 모델에 접근하기 위한 AWS 환경을 설정합니다.
@@ -40,6 +44,8 @@ Claude Code가 Bedrock API를 호출하려면 적절한 IAM 권한이 필요합�
 1. [IAM 콘솔](https://console.aws.amazon.com/iam/)로 이동합니다.
 2. **Policies** -> **Create policy**를 클릭합니다.
 3. **JSON** 탭을 선택하고 다음 정책을 입력합니다:
+
+이 정책을 아래 JSON 블록에서 그대로 복사하여 붙여넣으세요.
 
 ```json
 {
@@ -178,5 +184,14 @@ Claude 모델이 포함된 추론 프로파일 목록이 출력되면 설정이 
 | IAM 정책 생성 및 연결 | &#x2705; |
 | AWS 자격증명 설정 | &#x2705; |
 | 리전 설정 (us-east-1) | &#x2705; |
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] AWS 자격증명 테스트 성공 (`aws bedrock list-inference-profiles --region us-east-1` 실행 시 프로파일 목록 출력)
+- [ ] Bedrock 모델 액세스 활성화 확인 (Bedrock 콘솔에서 Claude 모델 상태가 Access granted)
 
 다음 섹션에서는 [Claude Code를 설치하고 Bedrock에 연결](02-claude-code-install.md)합니다.

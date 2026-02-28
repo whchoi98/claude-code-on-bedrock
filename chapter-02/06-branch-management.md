@@ -2,6 +2,10 @@
 
 > Git 저장소를 초기화하고, Skills(커스텀 슬래시 명령)를 만들어 반복적인 Git 작업을 자동화합니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: Git 명령 실행, Skills (커스텀 슬래시 명령)
+
+> ⭐⭐ **난이도**: 보통
+
 ## 학습 목표
 
 - Claude Code로 Git 저장소를 초기화하고 관리하는 방법을 배웁니다
@@ -9,6 +13,10 @@
 - 프로젝트 전용 커밋 스킬을 만들어 활용합니다
 
 ## Skills(커스텀 슬래시 명령)란?
+
+> 💡 **비유**: Skills는 "나만의 단축키 만들기"와 같습니다. 매번 같은 내용을 반복 입력하는 대신, 한 번 정의해두면 `/commit` 같은 짧은 명령으로 실행할 수 있습니다.
+
+매번 같은 커밋 규칙을 반복하지 않으려면? → Skills를 사용합니다.
 
 [Skills](https://code.claude.com/docs/en/skills)는 Claude Code의 기능을 확장하는 재사용 가능한 지시사항입니다. `SKILL.md` 파일에 지시를 작성하면, Claude가 자동으로 사용하거나 `/skill-name`으로 직접 호출할 수 있습니다.
 
@@ -48,6 +56,8 @@ context: fork                  # fork면 서브에이전트에서 실행
 
 Claude Code에서 Git 저장소를 초기화합니다:
 
+→ *이 프롬프트는 Git 저장소를 처음부터 설정하고 첫 커밋까지 한 번에 완료하기 위한 것입니다:*
+
 ```
 이 프로젝트의 Git 리포지토리를 초기화해줘:
 1. Next.js에 적합한 .gitignore 파일 생성 (node_modules, .next, .env*.local 등 포함)
@@ -61,6 +71,8 @@ Claude Code는 Git 명령어를 직접 실행할 수 있으므로, 저장소 초
 ### Step 2: 기능 브랜치 생성
 
 다음 작업을 위한 브랜치를 만듭니다:
+
+→ *이 프롬프트는 기능별 브랜치를 생성하여 체계적으로 코드를 관리하기 위한 것입니다:*
 
 ```
 세션 상세 페이지 구현을 위해 "feature/session-detail" 브랜치를 생성해줘.
@@ -76,11 +88,15 @@ Claude Code는 Git 명령어를 이해하고 실행할 수 있습니다. 브랜�
 
 먼저 디렉토리를 생성합니다:
 
+→ *이 프롬프트는 커밋 스킬을 저장할 디렉토리를 만들기 위한 것입니다:*
+
 ```
 .claude/skills/commit/ 디렉토리를 생성해줘
 ```
 
 그런 다음 SKILL.md 파일을 작성합니다:
+
+→ *이 프롬프트는 Conventional Commits 형식의 커밋 메시지를 자동 생성하는 스킬을 정의하기 위한 것입니다:*
 
 ```
 다음 내용으로 .claude/skills/commit/SKILL.md를 생성해줘:
@@ -120,6 +136,8 @@ disable-model-invocation: true
 
 코드를 변경한 후 스킬을 사용해봅니다:
 
+→ *이 프롬프트는 방금 만든 커밋 스킬을 실행하여 자동으로 커밋 메시지를 생성하고 커밋하기 위한 것입니다:*
+
 ```
 /commit
 ```
@@ -154,6 +172,8 @@ feat(sessions): add URL-based filtering for session list
 
 GitHub에 PR을 생성하는 스킬도 만들 수 있습니다:
 
+→ *이 프롬프트는 PR 생성을 자동화하는 스킬을 정의하기 위한 것입니다:*
+
 ```
 다음 내용으로 .claude/skills/pr/SKILL.md를 생성해줘:
 
@@ -181,6 +201,8 @@ PR 생성 스킬은 GitHub CLI(`gh`)가 설치되어 있어야 합니다. `gh au
 ### Step 6: 스킬 목록 확인
 
 현재 사용 가능한 스킬을 확인합니다:
+
+→ *이 프롬프트는 프로젝트와 개인 스킬 목록을 확인하기 위한 것입니다:*
 
 ```
 사용 가능한 스킬이 뭐가 있어?
@@ -252,6 +274,16 @@ Review this pull request for issues and improvements.
 | `/commit` | 커밋 스킬 호출 예시 |
 | 프로젝트 스킬 | `.claude/skills/`에 저장하여 팀과 공유 |
 | 개인 스킬 | `~/.claude/skills/`에 저장하여 모든 프로젝트에서 사용 |
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] Git 저장소 초기화 및 첫 커밋 완료
+- [ ] `/commit` 스킬이 동작함
+- [ ] 기능 브랜치가 생성됨
 
 ---
 

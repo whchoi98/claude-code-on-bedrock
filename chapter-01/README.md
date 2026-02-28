@@ -19,6 +19,18 @@
 | [1.7 데이터베이스 설정](07-database-setup.md) | Neon Postgres 생성, Drizzle ORM 설정, shadcn/ui 초기화 | 15분 |
 | [1.8 스키마 설계 & MCP](08-schema-design-mcp.md) | Plan 모드로 스키마 설계, 마이그레이션, Neon MCP 시드 데이터 | 20분 |
 
+### 이 챕터에서 배우는 Claude Code 기능
+
+| 기능 | 배우는 섹션 | 설명 |
+|------|-----------|------|
+| `claude` 명령 | 1.2, 1.3 | Claude Code 실행 및 대화 시작 |
+| `/help` | 1.4 | 사용 가능한 명령어 확인 |
+| `/clear`, `/compact` | 1.4, 1.6 | 컨텍스트 관리 |
+| Plan 모드 (`Shift+Tab`) | 1.4, 1.8 | 읽기 전용 탐색 및 계획 |
+| `/rewind`, `Esc` | 1.4 | 변경사항 되돌리기 |
+| `/init` | 1.3 | CLAUDE.md 자동 생성 |
+| MCP 서버 | 1.8 | 외부 도구 연결 (Neon DB) |
+
 ## 사전 준비
 
 이 챕터를 시작하기 전에 다음이 필요합니다:

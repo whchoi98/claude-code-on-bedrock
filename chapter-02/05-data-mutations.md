@@ -2,6 +2,12 @@
 
 > 데이터 변이(mutation) 가이드 문서를 작성하고, Server Actions로 학습 세션 생성 및 과목 관리 기능을 구현합니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: Server Actions를 활용한 데이터 변경
+
+> ⭐⭐ **난이도**: 보통
+
+> 💡 **Server Action이란?** 사용자가 폼을 제출하거나 버튼을 클릭했을 때 **서버에서 안전하게 데이터를 저장/수정/삭제하는 함수**입니다. "데이터를 변경하는 규칙"이라고 생각하면 됩니다.
+
 ## 학습 목표
 
 - 데이터 변이 규칙 문서를 작성하여 일관된 Server Action 패턴을 정의합니다
@@ -30,6 +36,8 @@ export async function createItem(formData: FormData) {
 ### Step 1: docs/data-mutations.md 작성
 
 데이터 변이의 규칙과 패턴을 문서로 정의합니다:
+
+→ *이 프롬프트는 데이터 변경(생성/수정/삭제) 규칙을 문서화하여, Claude Code가 일관된 Server Action 패턴을 생성하게 하기 위한 것입니다:*
 
 ```
 데이터 변이 패턴을 문서화하는 docs/data-mutations.md를 생성해줘:
@@ -78,6 +86,8 @@ type ActionResult = {
 ### Step 2: 학습 세션 생성 폼 구현
 
 가이드 문서를 참조하여 학습 세션 생성 기능을 구현합니다:
+
+→ *이 프롬프트는 변이 규칙 문서를 기반으로, Zod 유효성 검사를 포함한 세션 생성 Server Action과 폼 UI를 한 번에 구현하기 위한 것입니다:*
 
 ```
 docs/data-mutations.md를 읽어줘. "새 학습 세션" 폼을 구현해줘:
@@ -262,6 +272,8 @@ const [state, formAction, isPending] = useActionState(action, initialState);
 
 과목(Subject) CRUD 기능을 구현합니다:
 
+→ *이 프롬프트는 동일한 변이 패턴을 과목(Subject) 도메인에 적용하여, 생성/수정/삭제 전체 CRUD를 한 번에 구현하기 위한 것입니다:*
+
 ```
 docs/data-mutations.md 패턴을 따라 과목 관리를 위한 CRUD actions과 UI를 만들어줘:
 
@@ -301,6 +313,8 @@ const createSubjectSchema = z.object({
 ### Step 7: 전체 테스트
 
 개발 서버에서 기능을 테스트합니다:
+
+→ *이 프롬프트는 생성된 모든 CRUD 기능과 유효성 검사가 실제로 올바르게 동작하는지 통합 테스트하기 위한 것입니다:*
 
 ```
 pnpm dev를 실행하고 테스트해줘:
@@ -354,6 +368,16 @@ pnpm dev를 실행하고 테스트해줘:
 | `useActionState` | Server Action의 결과/pending 상태를 관리하는 React 훅 |
 | `revalidatePath()` | 특정 경로의 캐시를 무효화하여 데이터 새로고침 |
 | `actions/` 디렉토리 | 도메인별로 분리된 Server Action 파일 |
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] 새 학습 세션 생성이 동작함
+- [ ] 과목 CRUD (생성/수정/삭제)가 동작함
+- [ ] Zod 유효성 검사 에러가 올바르게 표시됨
 
 ---
 

@@ -2,6 +2,10 @@
 
 > Claude Code를 설치하고 Amazon Bedrock을 AI 제공자로 연결합니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: `claude` 명령어, Bedrock 연결
+
+> ⭐ **난이도**: 쉬움
+
 ## 개요
 
 이 섹션에서는 Claude Code CLI를 설치하고, 환경변수를 통해 Amazon Bedrock에 연결합니다. 일반적인 Claude Code 사용과의 핵심 차이점은 `CLAUDE_CODE_USE_BEDROCK=1` 환경변수 설정입니다.
@@ -116,6 +120,10 @@ export DISABLE_PROMPT_CACHING=1
 
 매번 환경변수를 설정하지 않도록 shell 프로필에 추가합니다.
 
+{% hint style="tip" %}
+어떤 셸을 사용하는지 모르겠다면 터미널에서 `echo $SHELL`을 실행해 보세요. `/bin/bash`면 Bash, `/bin/zsh`면 Zsh입니다.
+{% endhint %}
+
 ### Bash 사용자 (~/.bashrc)
 
 ```bash
@@ -190,5 +198,15 @@ AWS_REGION=us-east-1
 ANTHROPIC_DEFAULT_SONNET_MODEL='us.anthropic.claude-sonnet-4-6'
 ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:0'
 ```
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] `claude --version` 실행 시 버전 표시
+- [ ] `claude` 실행 시 Claude Code 인터페이스 표시
+- [ ] 간단한 질문에 응답 확인
 
 다음 섹션에서는 [Claude Code를 사용하여 Next.js 프로젝트를 생성](03-project-creation.md)합니다.

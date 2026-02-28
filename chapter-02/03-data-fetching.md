@@ -2,6 +2,10 @@
 
 > 데이터 패칭 가이드 문서를 작성하고, 서버 컴포넌트에서 Drizzle ORM으로 데이터를 패칭하는 패턴을 구현합니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: 문서 참조 패턴, 쿼리 함수 생성
+
+> ⭐⭐ **난이도**: 보통
+
 ## 학습 목표
 
 - 데이터 패칭 규칙 문서를 작성하여 일관된 패턴을 정의합니다
@@ -26,6 +30,8 @@ export default async function Page() {
 ### Step 1: docs/data-fetching.md 작성
 
 데이터 패칭의 규칙과 패턴을 문서로 정의합니다:
+
+→ *이 프롬프트는 데이터를 가져오는 규칙을 문서로 정리하여, 이후 Claude Code가 일관된 패턴으로 쿼리 코드를 생성하게 하기 위한 것입니다:*
 
 ```
 데이터 패칭 패턴을 문서화하는 docs/data-fetching.md를 생성해줘:
@@ -74,6 +80,8 @@ export async function getSessionsByUserId(userId: string) {
 ### Step 2: 학습 세션 목록 페이지 구현
 
 가이드 문서를 참조하여 세션 목록 페이지를 생성합니다:
+
+→ *이 프롬프트는 방금 작성한 데이터 패칭 문서를 기반으로, 실제 세션 목록 페이지와 쿼리 함수를 한 번에 생성하기 위한 것입니다:*
 
 ```
 docs/data-fetching.md를 읽어줘. 다음 요구사항으로 /dashboard/sessions에 학습 세션 목록 페이지를 만들어줘:
@@ -240,6 +248,8 @@ Next.js App Router는 `loading.tsx` 파일을 자동으로 React Suspense 경계
 
 개발 서버를 실행하여 결과를 확인합니다:
 
+→ *이 프롬프트는 생성된 코드가 실제로 동작하는지 확인하고, 에러가 있으면 자동으로 수정하기 위한 것입니다:*
+
 ```
 개발 서버를 실행하고 세션 페이지가 올바르게 동작하는지 확인해줘. TypeScript 에러나 누락된 import가 있으면 수정해줘.
 ```
@@ -282,6 +292,15 @@ Next.js App Router는 `loading.tsx` 파일을 자동으로 React Suspense 경계
 | `loading.tsx` | 자동 Suspense 경계로 로딩 UI 표시 |
 | `error.tsx` | 에러 경계로 에러 UI 표시 |
 | `auth()` | 모든 쿼리에서 userId 확인 필수 |
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] 세션 목록 페이지 동작 확인
+- [ ] 쿼리 함수 생성 확인
 
 ---
 

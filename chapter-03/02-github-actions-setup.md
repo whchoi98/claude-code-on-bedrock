@@ -2,6 +2,14 @@
 
 > GitHub Actions에서 Claude Code를 Amazon Bedrock과 연동하여 @claude 멘션으로 자동 코드 생성을 설정합니다.
 
+> 🎯 **이 섹션에서 배울 Claude Code 기능**: GitHub Actions + Claude Code Action, AWS OIDC 인증
+
+> ⭐⭐⭐ **난이도**: 어려움
+
+{% hint style="info" %}
+이 섹션은 설정 단계가 많아 복잡해 보일 수 있지만, **한 번만 설정하면** 이후부터 자동으로 동작합니다. 각 단계를 차근차근 따라가세요.
+{% endhint %}
+
 ## 개요
 
 [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)를 사용하면 GitHub Issue나 PR 코멘트에서 `@claude`를 멘션하여 코드 구현, PR 생성, 코드 리뷰 등을 자동화할 수 있습니다.
@@ -34,6 +42,8 @@ Amazon Bedrock (Claude 모델)
 
 ## 1단계: GitHub App 생성 (권장)
 
+> 지금 하는 것: Claude Code Action이 리포지토리에 접근할 수 있도록 GitHub App을 생성합니다.
+
 Bedrock 사용 시에는 수동 설정이 필요합니다. 먼저 커스텀 GitHub App을 생성합니다.
 
 ### GitHub App 생성
@@ -63,6 +73,8 @@ Bedrock 사용 시에는 수동 설정이 필요합니다. 먼저 커스텀 GitH
 4. **Install** 클릭
 
 ## 2단계: AWS OIDC Identity Provider 설정
+
+> 지금 하는 것: GitHub Actions가 AWS 자격증명 없이도 Bedrock에 안전하게 접근할 수 있도록 OIDC 인증을 설정합니다.
 
 GitHub Actions에서 AWS 자격증명 없이 안전하게 Bedrock에 접근하기 위해 OIDC를 설정합니다.
 
@@ -137,6 +149,8 @@ AWS 콘솔에서 **IAM > Identity providers > Add provider**로 이동합니다:
 
 ## 3단계: GitHub Secrets 설정
 
+> 지금 하는 것: 워크플로에서 사용할 비밀 값(AWS Role ARN, GitHub App 키)을 리포지토리에 등록합니다.
+
 리포지토리의 **Settings > Secrets and variables > Actions**에서 다음 시크릿을 추가합니다:
 
 | Secret Name | 값 |
@@ -147,7 +161,11 @@ AWS 콘솔에서 **IAM > Identity providers > Add provider**로 이동합니다:
 
 ## 4단계: 워크플로 파일 생성
 
+> 지금 하는 것: @claude 멘션 시 자동으로 Claude Code를 실행하는 GitHub Actions 워크플로 파일을 생성합니다.
+
 `.github/workflows/claude.yml` 파일을 생성합니다. Claude Code에 다음과 같이 요청할 수 있습니다:
+
+→ *이 프롬프트는 GitHub Actions 워크플로 YAML 파일을 자동 생성하기 위한 것입니다:*
 
 ```
 Amazon Bedrock과 연동되는 Claude Code GitHub Actions를 위한 .github/workflows/claude.yml을 생성해줘.
@@ -217,6 +235,8 @@ jobs:
 
 ## 5단계: 테스트
 
+> 지금 하는 것: 설정이 올바르게 되었는지 실제로 @claude 멘션을 통해 테스트합니다.
+
 워크플로 파일을 커밋하고 푸시합니다:
 
 ```bash
@@ -263,6 +283,18 @@ Error: Not authorized to perform sts:AssumeRoleWithWebIdentity
 
 - AWS 계정에서 Bedrock 모델 액세스가 활성화되어 있는지 확인
 - 워크플로의 `aws-region`이 모델이 활성화된 리전과 일치하는지 확인
+
+---
+
+## ✅ 체크포인트
+
+이 섹션을 완료하면 다음을 확인하세요:
+
+- [ ] GitHub App 생성 및 리포지토리에 설치 완료
+- [ ] AWS OIDC Identity Provider 및 IAM Role 설정 완료
+- [ ] GitHub Secrets (AWS_ROLE_TO_ASSUME, APP_ID, APP_PRIVATE_KEY) 등록 완료
+- [ ] `.github/workflows/claude.yml` 파일 커밋 및 푸시 완료
+- [ ] 테스트 Issue 생성 후 GitHub Actions 워크플로가 트리거되는지 확인
 
 ---
 

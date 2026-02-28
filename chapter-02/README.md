@@ -13,6 +13,17 @@
 - **Skills(커스텀 슬래시 명령)**을 만들어 반복 작업을 자동화할 수 있습니다
 - **서브에이전트**를 활용하여 코드 탐색과 리뷰를 수행할 수 있습니다
 
+### 이 챕터에서 배우는 Claude Code 기능
+
+| 기능 | 배우는 섹션 | 설명 |
+|------|-----------|------|
+| `/rewind` | 2.1 | 변경사항 되돌리기 |
+| `/init`, CLAUDE.md | 2.2 | 프로젝트 규칙 문서화 |
+| 문서 기반 코드 생성 | 2.2, 2.3 | CLAUDE.md + docs/로 일관된 코드 생성 |
+| Extended Thinking | 2.4 | 복잡한 로직을 깊이 사고하여 설계 |
+| Skills (커스텀 슬래시 명령) | 2.6 | 반복 작업 자동화 |
+| 서브에이전트 | 2.7 | 별도 컨텍스트에서 탐색/리뷰 위임 |
+
 ## 챕터 구성
 
 | 섹션 | 주제 | 핵심 Claude Code 기능 |
@@ -46,6 +57,20 @@ Chapter 1을 완료하여 다음이 준비되어 있어야 합니다:
 - [x] Clerk 인증이 설정된 상태
 - [x] Neon Postgres 데이터베이스가 연결된 상태
 - [x] Drizzle ORM 스키마가 정의된 상태 (`study_sessions`, `subjects`, `session_subjects`, `study_blocks`)
+
+## Next.js 개념 Quick Reference
+
+이 챕터에서 자주 등장하는 Next.js 개념을 간단히 정리합니다. 몰라도 괜찮습니다 — Claude Code가 코드를 생성해주지만, 알아두면 이해하기 쉽습니다.
+
+| 개념 | 한 줄 설명 | 예시 |
+|------|-----------|------|
+| **Server Component** | 서버에서 실행되는 컴포넌트. 데이터베이스에 직접 접근 가능 | `export default async function Page() { ... }` |
+| **Client Component** | 브라우저에서 실행되는 컴포넌트. 사용자 상호작용 처리 | `"use client"` 선언 필요 |
+| **Server Action** | 서버에서 실행되는 함수. 폼 제출 등 데이터 변경에 사용 | `"use server"` 선언 필요 |
+| **`auth()`** | Clerk에서 제공하는 함수. 현재 로그인한 사용자 ID를 반환 | `const { userId } = await auth()` |
+| **Drizzle ORM** | TypeScript로 SQL 쿼리를 작성하는 라이브러리 | `db.select().from(table).where(...)` |
+| **`searchParams`** | URL의 쿼리 파라미터를 서버 컴포넌트에서 읽는 방법 | `?sort=newest` → `searchParams.sort` |
+| **`revalidatePath()`** | 데이터 변경 후 페이지를 새로고침하는 함수 | 세션 생성 후 목록 페이지 갱신 |
 
 ## DB 스키마 참고
 

@@ -47,6 +47,39 @@ Vercel 배포 후 GitHub Actions와 Claude Code를 연동하여 Issue 기반 자
 
 UI 개선, 커스텀 슬래시 명령, 에이전트 스킬, Bash 활용 등 Claude Code의 고급 기능을 학습합니다.
 
+## Claude Code 기능 학습 로드맵
+
+이 워크샵에서는 Claude Code의 기능을 단계적으로 학습합니다. 각 챕터에서 배우는 주요 기능은 다음과 같습니다.
+
+```
+Chapter 1: 기초
+├── claude 명령으로 대화 시작
+├── 기본 명령어 (/help, /clear, /compact)
+├── Plan 모드 (Shift+Tab)
+├── 되돌리기 (/rewind, Esc)
+└── MCP 서버 연결
+
+Chapter 2: 핵심 기능
+├── /init으로 CLAUDE.md 생성
+├── 문서 기반 코드 생성 (CLAUDE.md + docs/)
+├── Thinking 모드 (복잡한 로직)
+├── Skills - 커스텀 슬래시 명령 (/commit)
+└── 서브에이전트 (탐색 위임)
+
+Chapter 3: 자동화
+├── Git 연동 (커밋, 푸시, PR)
+└── GitHub Actions + @claude
+
+Chapter 4: 고급 기능
+├── 이미지 기반 UI 피드백
+├── 사용자 범위 Skills (~/.claude/skills/)
+├── 에이전트 정의 (.claude/agents/)
+├── Hooks (자동 실행)
+└── CLI 파이프 (claude -p)
+```
+
+각 기능은 처음 등장하는 섹션에서 상세히 설명되며, 이후 챕터에서는 자연스럽게 활용됩니다.
+
 ## 사전 요구사항
 
 자세한 내용은 [사전 준비사항](prerequisites/README.md)을 참고하세요.
