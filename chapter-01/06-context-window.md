@@ -117,11 +117,11 @@ Claude Code를 사용할 때 가장 중요한 리소스는 **컨텍스트 윈도
 자동 압축 시 보존할 내용을 CLAUDE.md에서 지정할 수 있습니다:
 
 ```markdown
-# Compaction Guidelines
-When compacting, always preserve:
-- The full list of modified files
-- Test commands and their results
-- Current task objectives
+# 압축 가이드라인
+압축 시 항상 보존할 내용:
+- 수정된 파일의 전체 목록
+- 테스트 명령어와 결과
+- 현재 작업 목표
 ```
 
 ## 실습: CLAUDE.md에 컴팩션 가이드 추가
@@ -135,9 +135,9 @@ Claude Code에서 다음 프롬프트를 입력합니다:
 ```
 CLAUDE.md에 다음 섹션을 추가해줘:
 
-## Compaction Guidelines
-When compacting, preserve the list of modified files and test commands.
-Focus on retaining database schema changes and API route definitions.
+## 압축 가이드라인
+압축 시 수정된 파일 목록과 테스트 명령어를 보존해줘.
+데이터베이스 스키마 변경사항과 API 라우트 정의를 유지하는 데 집중해줘.
 ```
 
 이렇게 하면 자동 압축이 발생할 때 중요한 정보가 유지됩니다.
